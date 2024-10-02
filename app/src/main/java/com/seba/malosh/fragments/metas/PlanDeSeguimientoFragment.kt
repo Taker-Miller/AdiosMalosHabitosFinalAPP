@@ -27,7 +27,6 @@ class PlanDeSeguimientoFragment : Fragment() {
     companion object {
         private const val SELECTED_HABITS_KEY = "selected_habits"
 
-
         fun newInstance(selectedHabits: ArrayList<String>): PlanDeSeguimientoFragment {
             val fragment = PlanDeSeguimientoFragment()
             val bundle = Bundle()
@@ -49,7 +48,6 @@ class PlanDeSeguimientoFragment : Fragment() {
         fechaFinButton = view.findViewById(R.id.fechaFinButton)
         fechaInicioTextView = view.findViewById(R.id.fechaInicioTextView)
         fechaFinTextView = view.findViewById(R.id.fechaFinTextView)
-
 
         selectedHabits = arguments?.getStringArrayList(SELECTED_HABITS_KEY) ?: arrayListOf()
 
@@ -74,7 +72,6 @@ class PlanDeSeguimientoFragment : Fragment() {
 
             datePickerInicio.show()
         }
-
 
         fechaFinButton.setOnClickListener {
             if (fechaInicio == 0L) {

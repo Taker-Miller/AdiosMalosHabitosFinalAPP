@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
 import com.seba.malosh.R
-import com.seba.malosh.activities.BienvenidaActivity
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -18,7 +17,6 @@ import java.util.concurrent.TimeUnit
 class DesafiosDiariosFragment : Fragment() {
 
     private lateinit var contenedorDesafios: LinearLayout
-    private lateinit var volverButton: Button
     private lateinit var aceptarDesafioButton: Button
     private lateinit var cancelarDesafioButton: Button
     private lateinit var desafioDescripcion: TextView
@@ -55,7 +53,6 @@ class DesafiosDiariosFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_desafios_diarios, container, false)
 
         contenedorDesafios = view.findViewById(R.id.contenedorDesafios)
-        volverButton = view.findViewById(R.id.volverButton)
         aceptarDesafioButton = view.findViewById(R.id.aceptarDesafioButton)
         cancelarDesafioButton = view.findViewById(R.id.cancelarDesafioButton)
         desafioDescripcion = view.findViewById(R.id.desafioDescripcion)
@@ -67,9 +64,7 @@ class DesafiosDiariosFragment : Fragment() {
 
         registeredHabits = arguments?.getStringArrayList(HABITOS_KEY) ?: arrayListOf()
 
-
         actualizarCheckBoxesRestaurados()
-
 
         val sharedPreferences = requireContext().getSharedPreferences("temporizador_prefs", Context.MODE_PRIVATE)
         inicioCheckBox.setOnCheckedChangeListener { _, isChecked ->
@@ -88,7 +83,6 @@ class DesafiosDiariosFragment : Fragment() {
             sharedPreferences.edit().putBoolean("completado_check", isChecked).apply()
         }
 
-
         val inicioTemporizador = sharedPreferences.getLong(TEMPORIZADOR_INICIO_KEY, 0L)
         val temporizadorActivo = sharedPreferences.getBoolean("temporizador_activo", false)
         var tiempoRestante = sharedPreferences.getLong("tiempo_restante", TEMPORIZADOR_ESPERA)
@@ -106,10 +100,6 @@ class DesafiosDiariosFragment : Fragment() {
 
         aceptarDesafioButton.setOnClickListener { aceptarDesafio() }
         cancelarDesafioButton.setOnClickListener { cancelarDesafio() }
-        volverButton.setOnClickListener {
-            (activity as? BienvenidaActivity)?.mostrarElementosUI()
-            requireActivity().supportFragmentManager.popBackStack()
-        }
 
         return view
     }
@@ -131,7 +121,6 @@ class DesafiosDiariosFragment : Fragment() {
                         "Próximo desafío disponible en ${TimeUnit.MILLISECONDS.toSeconds(tiempoActualRestante)} segundos."
                     handler.postDelayed(this, 1000)
 
-
                     editor.putLong("tiempo_restante", tiempoActualRestante)
                     editor.apply()
                 } else {
@@ -148,15 +137,12 @@ class DesafiosDiariosFragment : Fragment() {
                     cancelarDesafioButton.visibility = View.GONE
                     aceptarDesafioButton.isEnabled = true
 
-
                     sharedPreferences.edit().remove(TEMPORIZADOR_INICIO_KEY).apply()
                 }
             }
         }
         handler.post(runnable)
     }
-
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -174,12 +160,8 @@ class DesafiosDiariosFragment : Fragment() {
         }
     }
 
-
-
-
     private fun iniciarTemporizador1Minuto() {
-        val sharedPreferences =
-            requireContext().getSharedPreferences("temporizador_prefs", Context.MODE_PRIVATE)
+        val sharedPreferences = requireContext().getSharedPreferences("temporizador_prefs", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         val tiempoInicio = System.currentTimeMillis()
         editor.putLong(TEMPORIZADOR_INICIO_KEY, tiempoInicio)
@@ -223,8 +205,7 @@ class DesafiosDiariosFragment : Fragment() {
 
     private fun actualizarCheckBoxes(tiempoRestante: Long) {
         val porcentajeRestante = 100 - ((tiempoRestante.toDouble() / TEMPORIZADOR_DURACION) * 100).toInt()
-        val sharedPreferences =
-            requireContext().getSharedPreferences("temporizador_prefs", Context.MODE_PRIVATE)
+        val sharedPreferences = requireContext().getSharedPreferences("temporizador_prefs", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
 
         if (porcentajeRestante >= 25) {
@@ -261,14 +242,12 @@ class DesafiosDiariosFragment : Fragment() {
     }
 
     private fun limpiarEstadoCheckBoxes() {
-        val sharedPreferences =
-            requireContext().getSharedPreferences("temporizador_prefs", Context.MODE_PRIVATE)
+        val sharedPreferences = requireContext().getSharedPreferences("temporizador_prefs", Context.MODE_PRIVATE)
         sharedPreferences.edit().clear().apply()
     }
 
     private fun validarDesafioCompletado() {
-        val sharedPreferences =
-            requireContext().getSharedPreferences("DesafiosCompletados", Context.MODE_PRIVATE)
+        val sharedPreferences = requireContext().getSharedPreferences("DesafiosCompletados", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
 
         if (inicioCheckBox.isChecked && enProgresoCheckBox.isChecked && casiPorTerminarCheckBox.isChecked && completadoCheckBox.isChecked) {
@@ -295,12 +274,10 @@ class DesafiosDiariosFragment : Fragment() {
         val sharedPreferences = requireContext().getSharedPreferences("temporizador_prefs", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
 
-
         val tiempoInicioGuardado = sharedPreferences.getLong("tiempo_restante", -1L)
         if (tiempoInicioGuardado > 0) {
             tiempoRestante = tiempoInicioGuardado
         }
-
 
         editor.putBoolean("temporizador_activo", true)
         editor.apply()
@@ -342,10 +319,6 @@ class DesafiosDiariosFragment : Fragment() {
         handler.post(runnable)
     }
 
-
-
-
-
     private fun limpiarDesafioAnterior() {
         desafioEnProgreso = false
         currentDesafio = null
@@ -385,7 +358,6 @@ class DesafiosDiariosFragment : Fragment() {
 
         iniciarTemporizador20Segundos()
     }
-
 
     private fun aceptarDesafio() {
         if (desafioEnProgreso) {
@@ -489,7 +461,6 @@ class DesafiosDiariosFragment : Fragment() {
         mostrarDesafio()
     }
 
-
     private fun mostrarDesafio() {
         if (desafiosList.isNotEmpty()) {
             currentDesafio = desafiosList.first()
@@ -513,8 +484,7 @@ class DesafiosDiariosFragment : Fragment() {
     }
 
     private fun actualizarCheckBoxesRestaurados() {
-        val sharedPreferences =
-            requireContext().getSharedPreferences("temporizador_prefs", Context.MODE_PRIVATE)
+        val sharedPreferences = requireContext().getSharedPreferences("temporizador_prefs", Context.MODE_PRIVATE)
         inicioCheckBox.isChecked = sharedPreferences.getBoolean("inicio_check", false)
         enProgresoCheckBox.isChecked = sharedPreferences.getBoolean("en_progreso_check", false)
         casiPorTerminarCheckBox.isChecked = sharedPreferences.getBoolean("casi_terminado_check", false)
@@ -523,8 +493,7 @@ class DesafiosDiariosFragment : Fragment() {
     }
 
     private fun guardarDesafioEnProgreso(context: Context, desafio: String?, enProgreso: Boolean) {
-        val sharedPreferences =
-            context.getSharedPreferences("desafio_prefs", Context.MODE_PRIVATE)
+        val sharedPreferences = context.getSharedPreferences("desafio_prefs", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         if (enProgreso) {
             editor.putString("desafio_actual", desafio)
@@ -537,8 +506,7 @@ class DesafiosDiariosFragment : Fragment() {
     }
 
     private fun obtenerDesafioEnProgreso(context: Context): String? {
-        val sharedPreferences =
-            context.getSharedPreferences("desafio_prefs", Context.MODE_PRIVATE)
+        val sharedPreferences = context.getSharedPreferences("desafio_prefs", Context.MODE_PRIVATE)
         return if (sharedPreferences.getBoolean("en_progreso", false)) {
             sharedPreferences.getString("desafio_actual", null)
         } else {

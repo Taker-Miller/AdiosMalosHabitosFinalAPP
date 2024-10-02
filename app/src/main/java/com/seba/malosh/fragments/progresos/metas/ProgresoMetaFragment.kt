@@ -1,6 +1,7 @@
 package com.seba.malosh.fragments.progresos.metas
 
 import android.app.AlertDialog
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -67,14 +68,21 @@ class ProgresoMetaFragment : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun configurarCalendario() {
-        calendarioMeta.minDate = fechaInicio
-        calendarioMeta.maxDate = fechaFin
+        // Verifica que la fecha de inicio y fin sean válidas antes de asignarlas
+        if (fechaInicio > 0 && fechaFin > fechaInicio) {
+            calendarioMeta.minDate = fechaInicio
+            calendarioMeta.maxDate = fechaFin
+        } else {
+            Toast.makeText(context, "Error al cargar las fechas de la meta. Por favor, reinicia la meta.", Toast.LENGTH_SHORT).show()
+            // Opcional: puedes setear un rango de fechas por defecto si las fechas no son válidas
+            calendarioMeta.minDate = System.currentTimeMillis() // Fecha actual como mínimo
+            calendarioMeta.maxDate = System.currentTimeMillis() + 31536000000L // 1 año como máximo
+        }
 
         calendarioMeta.setOnDateChangeListener { _, year, month, dayOfMonth ->
             val selectedDate = Calendar.getInstance()
             selectedDate.set(year, month, dayOfMonth)
             val today = Calendar.getInstance()
-
 
             if (esDiaActual(selectedDate, today)) {
                 val fechaSeleccionada = dateFormat.format(selectedDate.time)
@@ -84,6 +92,7 @@ class ProgresoMetaFragment : Fragment() {
             }
         }
     }
+
 
 
     private fun esDiaActual(selectedDate: Calendar, today: Calendar): Boolean {
@@ -226,4 +235,29 @@ class ProgresoMetaFragment : Fragment() {
 
         return mesesList
     }
+
+    private fun obtenerFechaInicioMeta(): Long {
+        val sharedPreferences = requireContext().getSharedPreferences("MetaPrefs", Context.MODE_PRIVATE)
+        val fechaInicio = sharedPreferences.getLong("fecha_inicio_meta", 0L)
+
+        if (fechaInicio > 0) {
+            return fechaInicio
+        } else {
+            Toast.makeText(requireContext(), "Fecha de inicio no configurada.", Toast.LENGTH_SHORT).show()
+            return System.currentTimeMillis() // Devuelve la fecha actual como valor por defecto
+        }
+    }
+
+    private fun obtenerFechaFinMeta(): Long {
+        val sharedPreferences = requireContext().getSharedPreferences("MetaPrefs", Context.MODE_PRIVATE)
+        val fechaFin = sharedPreferences.getLong("fecha_fin_meta", 0L)
+
+        if (fechaFin > 0) {
+            return fechaFin
+        } else {
+            Toast.makeText(requireContext(), "Fecha de fin no configurada.", Toast.LENGTH_SHORT).show()
+            return System.currentTimeMillis() + 31536000000L // Devuelve 1 año en el futuro como valor por defecto
+        }
+    }
+
 }

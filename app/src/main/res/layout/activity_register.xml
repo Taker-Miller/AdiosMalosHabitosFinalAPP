@@ -125,7 +125,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/registrarse"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:backgroundTint="@color/teal_light"
         android:padding="12dp"
         android:textStyle="bold"

@@ -10,11 +10,9 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.seba.malosh.R
-import com.seba.malosh.activities.BienvenidaActivity
 
 class MetasFragment : Fragment() {
 
-    private lateinit var volverButton: Button
     private lateinit var definirMetasButton: Button
     private lateinit var habitosLayout: LinearLayout
     private var registeredHabits: ArrayList<String> = arrayListOf()
@@ -25,10 +23,8 @@ class MetasFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_metas, container, false)
 
-        volverButton = view.findViewById(R.id.volverButton)
         definirMetasButton = view.findViewById(R.id.definirMetasButton)
         habitosLayout = view.findViewById(R.id.habitosLayout)
-
 
         registeredHabits = arguments?.getStringArrayList("registeredHabits") ?: arrayListOf()
 
@@ -64,12 +60,6 @@ class MetasFragment : Fragment() {
                     ?.addToBackStack(null)
                     ?.commit()
             }
-        }
-
-        volverButton.setOnClickListener {
-            (activity as? BienvenidaActivity)?.mostrarElementosUI()
-
-            requireActivity().supportFragmentManager.popBackStack()
         }
 
         return view

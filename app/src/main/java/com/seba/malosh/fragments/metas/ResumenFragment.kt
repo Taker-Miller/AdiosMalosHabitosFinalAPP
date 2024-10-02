@@ -59,25 +59,20 @@ class ResumenFragment : Fragment() {
         periodoSeleccionadoTextView = view.findViewById(R.id.periodoSeleccionado)
         habitoSeleccionadoTextView = view.findViewById(R.id.habitoSeleccionado)
 
-
         fechaInicio = arguments?.getString(FECHA_INICIO_KEY)
         fechaFin = arguments?.getString(FECHA_FIN_KEY)
         habitos = arguments?.getStringArrayList(HABITOS_KEY)
 
-
         periodoSeleccionadoTextView.text = "Periodo: $fechaInicio - $fechaFin"
         habitoSeleccionadoTextView.text = "Hábitos seleccionados: ${habitos?.joinToString(", ")}"
-
 
         volverButton.setOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()
         }
 
-
         comenzarPlanButton.setOnClickListener {
             guardarMetaEnProgreso()
             verificarDesbloqueoLogros()
-
 
             (activity as? BienvenidaActivity)?.comenzarPlan()
             Toast.makeText(context, "¡El plan ha comenzado!", Toast.LENGTH_SHORT).show()
@@ -88,26 +83,23 @@ class ResumenFragment : Fragment() {
         return view
     }
 
-
     private fun guardarMetaEnProgreso() {
         val sharedPreferences = requireContext().getSharedPreferences("MetaPrefs", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
 
+        val fechaInicioLong = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(fechaInicio)?.time ?: 0L
+        val fechaFinLong = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(fechaFin)?.time ?: 0L
 
-        editor.putBoolean("plan_iniciado", true)
-
-
-        editor.putBoolean("meta_en_progreso", true)
-
-
-        val fechaInicioLong = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(fechaInicio)?.time
-        val fechaFinLong = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(fechaFin)?.time
-
-        editor.putLong("fecha_inicio_meta", fechaInicioLong ?: 0L)
-        editor.putLong("fecha_fin_meta", fechaFinLong ?: 0L)
-        editor.apply()
+        if (fechaInicioLong > 0 && fechaFinLong > fechaInicioLong) {
+            editor.putBoolean("plan_iniciado", true)
+            editor.putBoolean("meta_en_progreso", true)
+            editor.putLong("fecha_inicio_meta", fechaInicioLong)
+            editor.putLong("fecha_fin_meta", fechaFinLong)
+            editor.apply()
+        } else {
+            Toast.makeText(context, "Error al guardar las fechas del plan. Por favor, revisa las fechas seleccionadas.", Toast.LENGTH_SHORT).show()
+        }
     }
-
 
     private fun verificarDesbloqueoLogros() {
         val sharedPreferences = requireContext().getSharedPreferences("LogrosPrefs", Context.MODE_PRIVATE)

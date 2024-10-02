@@ -3,49 +3,53 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:padding="16dp"
-    android:background="@android:color/white">
+    android:padding="24dp"
+    android:background="@color/purple_dark">
 
-    <!-- Título para seleccionar el mes -->
+    <!-- Título estilizado -->
     <TextView
         android:id="@+id/periodoSeleccionadoTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Selecciona el Mes"
-        android:textSize="18sp"
-        android:textColor="@android:color/black"
-        android:layout_marginBottom="16dp"
-        android:textStyle="bold" />
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:fontFamily="@font/roboto_medium"
+        android:layout_marginBottom="20dp" />
 
-    <!-- Spinner para seleccionar el mes -->
+    <!-- Spinner con diseño moderno -->
     <Spinner
         android:id="@+id/mesSpinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:background="@android:color/holo_blue_light" />
+        android:layout_marginBottom="20dp"
+        android:padding="12dp"
+        android:background="@drawable/spinner_background" />
 
-    <!-- Calendario para mostrar días -->
+    <!-- Calendario con estilo sutil -->
     <CalendarView
         android:id="@+id/calendarioMeta"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:dateTextAppearance="@style/TextAppearance.AppCompat.Large"
-        android:layout_marginBottom="16dp"
-        android:background="@android:color/holo_green_light" />
+        android:dateTextAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:layout_marginBottom="24dp"
+        android:backgroundTint="@color/secondary_background_color" />
 
-    <!-- Estado de los días completados o fallidos -->
     <TextView
         android:id="@+id/estadoDiaTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Estado del Día"
-        android:textSize="16sp"
-        android:padding="12dp"
-        android:textColor="@android:color/black"
-        android:background="@android:color/holo_orange_light"
-        android:layout_marginTop="16dp"
+        android:textSize="18sp"
+        android:padding="16dp"
+        android:textColor="@color/text_color_secondary"
+        android:background="@drawable/textview_background"
+        android:layout_marginTop="20dp"
         android:gravity="center"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:fontFamily="@font/roboto_medium"
+        android:elevation="4dp" />
+
 
 </LinearLayout>

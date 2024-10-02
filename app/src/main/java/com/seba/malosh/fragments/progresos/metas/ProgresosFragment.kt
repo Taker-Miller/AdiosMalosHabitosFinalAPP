@@ -32,7 +32,9 @@ class ProgresoFragment : Fragment() {
         tituloProgresos = view.findViewById(R.id.tituloProgresos)
         descripcionProgresos = view.findViewById(R.id.descripcionProgresos)
 
-        resetearPreferenciasMeta()
+        // No se resetearán las preferencias para no perder el progreso del plan actual.
+        // Si necesitas hacerlo para debug, puedes descomentar la línea siguiente.
+        // resetearPreferenciasMeta()
 
         metaEnProgreso = verificarMetaEnProgreso()
 
@@ -64,11 +66,7 @@ class ProgresoFragment : Fragment() {
                             .addToBackStack(null)
                             .commit()
                     } else {
-                        Toast.makeText(
-                            context,
-                            "No hay ninguna meta en progreso. Primero debes comenzar un plan de seguimiento.",
-                            Toast.LENGTH_LONG
-                        ).show()
+                        Toast.makeText(requireContext(), "No tienes metas en progreso.", Toast.LENGTH_LONG).show()
                     }
                 }
 
@@ -101,20 +99,42 @@ class ProgresoFragment : Fragment() {
         return view
     }
 
+    // Método para verificar si hay una meta en progreso.
     private fun verificarMetaEnProgreso(): Boolean {
         val sharedPreferences = requireContext().getSharedPreferences("MetaPrefs", Context.MODE_PRIVATE)
         return sharedPreferences.getBoolean("meta_en_progreso", false)
     }
 
+    // Obtener la fecha de inicio de la meta desde SharedPreferences.
     private fun obtenerFechaInicioMeta(): Long {
         val sharedPreferences = requireContext().getSharedPreferences("MetaPrefs", Context.MODE_PRIVATE)
-        return sharedPreferences.getLong("fecha_inicio_meta", Calendar.getInstance().timeInMillis)
+        val fechaInicio = sharedPreferences.getLong("fecha_inicio_meta", 0L)
+
+        // Verificación opcional para mostrar la fecha de inicio.
+        if (fechaInicio > 0) {
+            Toast.makeText(requireContext(), "Fecha inicio meta: ${Date(fechaInicio)}", Toast.LENGTH_LONG).show()
+        } else {
+            Toast.makeText(requireContext(), "No se ha registrado una fecha de inicio.", Toast.LENGTH_SHORT).show()
+        }
+
+        return fechaInicio
     }
 
+    // Obtener la fecha de fin de la meta desde SharedPreferences.
     private fun obtenerFechaFinMeta(): Long {
         val sharedPreferences = requireContext().getSharedPreferences("MetaPrefs", Context.MODE_PRIVATE)
-        return sharedPreferences.getLong("fecha_fin_meta", Calendar.getInstance().apply { add(Calendar.YEAR, 1) }.timeInMillis)
+        val fechaFin = sharedPreferences.getLong("fecha_fin_meta", 0L)
+
+
+        if (fechaFin > 0) {
+            Toast.makeText(requireContext(), "Fecha fin meta: ${Date(fechaFin)}", Toast.LENGTH_LONG).show()
+        } else {
+            Toast.makeText(requireContext(), "No se ha registrado una fecha de fin.", Toast.LENGTH_SHORT).show()
+        }
+
+        return fechaFin
     }
+
 
     private fun resetearPreferenciasMeta() {
         val sharedPreferences = requireContext().getSharedPreferences("MetaPrefs", Context.MODE_PRIVATE)

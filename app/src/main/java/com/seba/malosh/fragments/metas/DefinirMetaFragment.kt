@@ -13,7 +13,6 @@ import com.seba.malosh.R
 
 class DefinirMetaFragment : Fragment() {
 
-    private lateinit var volverButton: Button
     private lateinit var definirMetaButton: Button
     private lateinit var habitosLayout: LinearLayout
     private val checkboxes = mutableListOf<CheckBox>()
@@ -36,7 +35,6 @@ class DefinirMetaFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_definir_meta, container, false)
 
-        volverButton = view.findViewById(R.id.volverButton)
         definirMetaButton = view.findViewById(R.id.definirMetaButton)
         habitosLayout = view.findViewById(R.id.habitosLayout)
 
@@ -63,10 +61,6 @@ class DefinirMetaFragment : Fragment() {
                     Toast.makeText(context, "Meta definida para: ${selectedHabits.joinToString { it.text }}", Toast.LENGTH_SHORT).show()
                 }
             }
-        }
-
-        volverButton.setOnClickListener {
-            requireActivity().supportFragmentManager.popBackStack()
         }
 
         return view

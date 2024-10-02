@@ -9,12 +9,10 @@ import android.widget.CheckBox
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.seba.malosh.R
-import com.seba.malosh.activities.BienvenidaActivity
 import java.util.Calendar
 
 class SeleccionarHabitosFragment : Fragment() {
 
-    private lateinit var volverButton: Button
     private lateinit var siguienteButton: Button
     private lateinit var checkboxes: List<CheckBox>
     private var registeredHabits = ArrayList<String>()
@@ -42,7 +40,6 @@ class SeleccionarHabitosFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_seleccionar_habitos, container, false)
 
-        volverButton = view.findViewById(R.id.volverButton)
         siguienteButton = view.findViewById(R.id.siguienteButton)
 
         checkboxes = listOf(
@@ -88,11 +85,6 @@ class SeleccionarHabitosFragment : Fragment() {
                     ?.addToBackStack(null)
                     ?.commit()
             }
-        }
-
-        volverButton.setOnClickListener {
-            (activity as? BienvenidaActivity)?.mostrarElementosUI()
-            requireActivity().supportFragmentManager.popBackStack()
         }
 
         return view

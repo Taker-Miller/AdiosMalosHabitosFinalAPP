@@ -37,7 +37,7 @@ class DesafiosCompletadosFragment : Fragment() {
         val desafiosCompletados = mutableListOf<String>()
 
         val contador = sharedPreferences.getInt("contador_desafios", 0)
-        val formatter = SimpleDateFormat("EEEE, dd MMM yyyy", Locale.getDefault())
+        SimpleDateFormat("EEEE, dd MMM yyyy", Locale.getDefault())
 
         for (i in 0 until contador) {
             val dia = sharedPreferences.getString("fecha_$i", null)
