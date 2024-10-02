@@ -52,13 +52,23 @@ class ProgresoFragment : Fragment() {
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
 
+        fun obtenerHabitosRegistrados(): ArrayList<String> {
+            val sharedPreferences = requireContext().getSharedPreferences("HabitosPrefs", Context.MODE_PRIVATE)
+            val habitosSet = sharedPreferences.getStringSet("habitos_registrados", setOf()) // Recupera los hábitos como un Set
+            return ArrayList(habitosSet ?: listOf()) // Convertir Set en ArrayList
+        }
+
+
         seleccionarButton.setOnClickListener {
             when (opcionSeleccionada) {
                 "Progreso Meta" -> {
+
                     if (metaEnProgreso) {
                         val fechaInicio = obtenerFechaInicioMeta()
                         val fechaFin = obtenerFechaFinMeta()
-                        val habitos = arrayListOf("Dormir a deshoras")
+
+
+                        val habitos = obtenerHabitosRegistrados()
 
                         val fragment = ProgresoMetaFragment.newInstance(fechaInicio, fechaFin, habitos)
                         requireActivity().supportFragmentManager.beginTransaction()
@@ -66,9 +76,11 @@ class ProgresoFragment : Fragment() {
                             .addToBackStack(null)
                             .commit()
                     } else {
-                        Toast.makeText(requireContext(), "No tienes metas en progreso.", Toast.LENGTH_LONG).show()
+
+                        Toast.makeText(requireContext(), "No tienes ninguna meta en progreso.", Toast.LENGTH_LONG).show()
                     }
                 }
+
 
                 "Logros" -> {
                     val fragment = LogrosFragment()

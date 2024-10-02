@@ -52,6 +52,12 @@ class ProgresoMetaFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_progreso_meta, container, false)
 
+
+        val sharedPreferences = requireContext().getSharedPreferences("MetaPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.clear()
+        editor.apply()
+
         calendarioMeta = view.findViewById(R.id.calendarioMeta)
         estadoDiaTextView = view.findViewById(R.id.estadoDiaTextView)
         mesSpinner = view.findViewById(R.id.mesSpinner)
@@ -66,15 +72,16 @@ class ProgresoMetaFragment : Fragment() {
         return view
     }
 
+
     @RequiresApi(Build.VERSION_CODES.M)
     private fun configurarCalendario() {
-        // Verifica que la fecha de inicio y fin sean válidas antes de asignarlas
+
         if (fechaInicio > 0 && fechaFin > fechaInicio) {
             calendarioMeta.minDate = fechaInicio
             calendarioMeta.maxDate = fechaFin
         } else {
             Toast.makeText(context, "Error al cargar las fechas de la meta. Por favor, reinicia la meta.", Toast.LENGTH_SHORT).show()
-            // Opcional: puedes setear un rango de fechas por defecto si las fechas no son válidas
+
             calendarioMeta.minDate = System.currentTimeMillis() // Fecha actual como mínimo
             calendarioMeta.maxDate = System.currentTimeMillis() + 31536000000L // 1 año como máximo
         }
@@ -244,7 +251,7 @@ class ProgresoMetaFragment : Fragment() {
             return fechaInicio
         } else {
             Toast.makeText(requireContext(), "Fecha de inicio no configurada.", Toast.LENGTH_SHORT).show()
-            return System.currentTimeMillis() // Devuelve la fecha actual como valor por defecto
+            return System.currentTimeMillis()
         }
     }
 
