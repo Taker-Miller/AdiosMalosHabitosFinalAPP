@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:gravity="center"
+    android:background="@color/purple_dark">
+
+    <!-- Título para Progresos -->
+    <TextView
+        android:id="@+id/tituloProgresos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Progresos"
+        android:textSize="24sp"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:padding="12dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Spinner de Progresos -->
+    <Spinner
+        android:id="@+id/progresoSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/spinner_background"/>
+
+    <!-- Descripción de Progresos -->
+    <TextView
+        android:id="@+id/descripcionProgresos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Seleccione una opción de progreso para ver los detalles."
+        android:textSize="16sp"
+        android:textColor="@android:color/white"
+        android:background="@drawable/rounded_corners_orange"
+        android:padding="16dp"
+        android:gravity="center"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Botón Seleccionar -->
+    <Button
+        android:id="@+id/seleccionarButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Seleccionar"
+        android:backgroundTint="@android:color/holo_blue_dark"
+        android:textColor="@android:color/white"
+        android:padding="12dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="16dp"/>
+
+</LinearLayout>
