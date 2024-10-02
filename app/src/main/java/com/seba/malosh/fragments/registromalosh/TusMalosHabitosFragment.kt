@@ -34,7 +34,7 @@ class TusMalosHabitosFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_tus_malos_habitos, container, false)
 
         malosHabitosTextView = view.findViewById(R.id.malosHabitosTextView)
-        volverButton = view.findViewById(R.id.volverButton)
+
 
         val habitos = arguments?.getStringArrayList(HABITOS_KEY)
 
