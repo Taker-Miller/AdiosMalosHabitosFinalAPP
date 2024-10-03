@@ -7,4 +7,6 @@
         <item name="colorPrimaryDark">@color/purple</item>
         <item name="colorAccent">@color/teal_dark</item>
     </style>
+
+
 </resources>

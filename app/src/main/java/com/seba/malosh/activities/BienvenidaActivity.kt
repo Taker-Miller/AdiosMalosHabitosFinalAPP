@@ -25,10 +25,12 @@ import com.seba.malosh.fragments.reflexionesd.ReflexionesDiariasFragment
 import com.seba.malosh.fragments.registromalosh.SeleccionarHabitosFragment
 import com.seba.malosh.fragments.registromalosh.TusMalosHabitosFragment
 import com.seba.malosh.R
+import com.seba.malosh.fragments.perfil.ModificarPerfilDialogFragment
+import com.seba.malosh.fragments.perfil.PerfilFragment
 import com.seba.malosh.receivers.PlanInicioReceiver
 import java.util.*
 
-class BienvenidaActivity : AppCompatActivity() {
+class BienvenidaActivity : AppCompatActivity(), ModificarPerfilDialogFragment.ModificarPerfilListener {
 
     private val registeredHabits = ArrayList<String>()
     private var planEnProgreso = false
@@ -71,11 +73,14 @@ class BienvenidaActivity : AppCompatActivity() {
         })
     }
 
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.menu_navegacion, menu)
         return true
     }
+
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
@@ -93,6 +98,18 @@ class BienvenidaActivity : AppCompatActivity() {
                 }
                 true
             }
+
+            R.id.menu_item_perfil -> {
+                // Lógica para abrir la pantalla de perfil
+                ocultarElementosUI()
+                val fragment = PerfilFragment() // Asegúrate de tener este fragment creado
+                val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+                transaction.replace(R.id.fragment_container, fragment)
+                transaction.addToBackStack(null)
+                transaction.commit()
+                true
+            }
+
             R.id.menu_item_metas -> {
                 if (planEnProgreso) {
                     Toast.makeText(this, "Debes completar la meta actual antes de definir una nueva.", Toast.LENGTH_SHORT).show()
@@ -241,5 +258,11 @@ class BienvenidaActivity : AppCompatActivity() {
             val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
             scheduleExactAlarmLauncher.launch(intent)
         }
+    }
+
+    // Implementación de la interfaz para modificar el perfil
+    override fun onPerfilModificado(nombre: String, correo: String) {
+        Toast.makeText(this, "Perfil actualizado: $nombre, $correo", Toast.LENGTH_SHORT).show()
+        // Aquí puedes actualizar la información del perfil en la UI o guardarla en SharedPreferences o base de datos
     }
 }
