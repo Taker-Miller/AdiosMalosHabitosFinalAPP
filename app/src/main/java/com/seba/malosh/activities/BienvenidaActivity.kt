@@ -260,9 +260,9 @@ class BienvenidaActivity : AppCompatActivity(), ModificarPerfilDialogFragment.Mo
         }
     }
 
-    // Implementación de la interfaz para modificar el perfil
+
     override fun onPerfilModificado(nombre: String, correo: String) {
         Toast.makeText(this, "Perfil actualizado: $nombre, $correo", Toast.LENGTH_SHORT).show()
-        // Aquí puedes actualizar la información del perfil en la UI o guardarla en SharedPreferences o base de datos
+
     }
 }
