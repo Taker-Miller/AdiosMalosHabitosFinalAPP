@@ -22,7 +22,7 @@ class ProgresoFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_progresos, container, false)
 
         val cardMeta: CardView = view.findViewById(R.id.card_meta)
-
+        val cardLogros: CardView = view.findViewById(R.id.card_logros)
 
         cardMeta.setOnClickListener {
 
@@ -37,7 +37,15 @@ class ProgresoFragment : Fragment() {
                 .addToBackStack(null)
                 .commit()
         }
-
+        // Acción para Logros
+        cardLogros.setOnClickListener {
+            // Navegar al fragmento de Logros
+            val fragment = LogrosFragment()
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit()
+        }
 
 
 
