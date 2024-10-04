@@ -5,80 +5,87 @@
     android:layout_height="match_parent"
     android:background="@color/purple_dark">
 
-    <!-- Toolbar con un diseño sencillo -->
+    <!-- Toolbar con un diseño moderno y minimalista -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/teal_dark"
-        android:elevation="4dp"
+        android:elevation="8dp"
         android:title="Malos Hábitos"
         android:titleTextColor="@color/white"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-    <!-- Contenido principal (logo y texto) encapsulado en CardView -->
+    <!-- CardView para el contenido principal con un toque moderno -->
     <androidx.cardview.widget.CardView
         android:id="@+id/cardContent"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="8dp"
-        android:layout_marginTop="16dp"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="10dp"
+        android:layout_marginTop="32dp"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginHorizontal="16dp">
+        android:layout_marginHorizontal="24dp"
+        android:backgroundTint="@color/white">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="24dp"
+            android:gravity="center">
 
-            <!-- Logo -->
+
             <ImageView
                 android:id="@+id/logoImageView"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
                 android:layout_gravity="center"
                 android:src="@drawable/malosh"
-                android:scaleType="centerInside" />
+                android:scaleType="centerInside"
+                android:elevation="8dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/circle_background" />
 
-            <!-- Título de bienvenida -->
+
             <TextView
                 android:id="@+id/titleTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:text="Bienvenido a Malos Hábitos"
                 android:textColor="@color/black"
-                android:textSize="22sp"
+                android:textSize="24sp"
                 android:textStyle="bold"
-                android:gravity="center" />
+                android:fontFamily="@font/roboto_medium"
+                android:gravity="center"
+                android:layout_marginBottom="8dp" />
 
-            <!-- Descripción de la app -->
             <TextView
                 android:id="@+id/descriptionTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:text="@string/contexto"
-                android:textColor="@color/black"
+                android:textColor="@color/gray"
                 android:textSize="16sp"
-                android:gravity="center" />
+                android:gravity="center"
+                android:lineSpacingExtra="4dp" />
 
-            <!-- Mensaje sobre notificaciones -->
+
             <TextView
                 android:id="@+id/notificationAdviceTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Para tener un mejor seguimiento de tu progreso, te sugerimos activar las notificaciones."
-                android:textColor="@color/black"
-                android:textSize="16sp"
-                android:gravity="center" />
+                android:layout_marginTop="12dp"
+                android:text="Para un mejor seguimiento de tu progreso, activa las notificaciones."
+                android:textColor="@color/gray"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:lineSpacingExtra="4dp" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>

@@ -15,6 +15,7 @@ lifecycleViewmodelCompose = "2.8.6"
 material = "1.12.0"
 activity = "1.9.2"
 materialCalendarviewVersion = "2.0.1"
+gridlayout = "1.0.0"
 
 [libraries]
 androidx-cardview = { module = "androidx.cardview:cardview", version.ref = "cardview" }
@@ -40,6 +41,7 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 prolificinteractive-material-calendarview = { module = "com.prolificinteractive:material-calendarview", version.ref = "materialCalendarviewVersion" }
+androidx-gridlayout = { group = "androidx.gridlayout", name = "gridlayout", version.ref = "gridlayout" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

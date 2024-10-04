@@ -54,4 +54,5 @@
     <string name="desafio_en_progreso">Desafío en progreso: %1$s</string>
     <string name="casi_por_terminar">Casi por Terminar</string>
     <string name="D_diarios">Desafíos Diarios</string>
+    <string name="desafios_completados">Desafíos Completados</string>
 </resources>

@@ -77,6 +77,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.material)
     implementation(libs.androidx.activity)
+    implementation(libs.androidx.gridlayout)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

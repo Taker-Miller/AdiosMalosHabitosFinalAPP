@@ -1,15 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:gravity="center"
-    android:background="@color/purple_dark">
+    android:background="@color/purple_dark"
+    android:padding="16dp">
 
-    <!-- Título para Progresos -->
+
     <TextView
         android:id="@+id/tituloProgresos"
         android:layout_width="wrap_content"
@@ -18,41 +15,48 @@
         android:textSize="24sp"
         android:textColor="@android:color/white"
         android:textStyle="bold"
-        android:padding="12dp"
-        android:layout_gravity="center"
-        android:layout_marginBottom="16dp"/>
-
-    <!-- Spinner de Progresos -->
-    <Spinner
-        android:id="@+id/progresoSpinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:background="@drawable/spinner_background"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Descripción de Progresos -->
-    <TextView
-        android:id="@+id/descripcionProgresos"
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_meta"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Seleccione una opción de progreso para ver los detalles."
-        android:textSize="16sp"
-        android:textColor="@android:color/white"
-        android:background="@drawable/rounded_corners_orange"
-        android:padding="16dp"
-        android:gravity="center"
-        android:layout_marginBottom="16dp"/>
+        android:layout_margin="8dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="8dp"
+        app:layout_constraintTop_toBottomOf="@id/tituloProgresos"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <!-- Botón Seleccionar -->
-    <Button
-        android:id="@+id/seleccionarButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Seleccionar"
-        android:backgroundTint="@android:color/holo_blue_dark"
-        android:textColor="@android:color/white"
-        android:padding="12dp"
-        android:layout_gravity="center"
-        android:layout_marginBottom="16dp"/>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-</LinearLayout>
+
+
+            <ImageView
+                android:id="@+id/image_meta"
+                android:layout_width="match_parent"
+                android:layout_height="184dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_progreso_meta" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Progreso Meta"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:background="#80000000"
+                android:gravity="center"
+                android:padding="8dp"
+                android:layout_gravity="center"/>
+        </FrameLayout>
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
