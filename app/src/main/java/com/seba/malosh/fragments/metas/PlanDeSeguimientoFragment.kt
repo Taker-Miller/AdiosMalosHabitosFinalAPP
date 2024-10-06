@@ -61,8 +61,9 @@ class PlanDeSeguimientoFragment : Fragment() {
                 val selectedCalendar = Calendar.getInstance()
                 selectedCalendar.set(selectedYear, selectedMonth, selectedDay)
                 fechaInicio = selectedCalendar.timeInMillis
-                fechaInicioTextView.text = "$selectedDay/${selectedMonth + 1}/$selectedYear"
+                fechaInicioTextView.text = getString(R.string.fecha_seleccionada, selectedDay, selectedMonth + 1, selectedYear)
             }, year, month, day)
+
 
             datePickerInicio.datePicker.minDate = calendar.timeInMillis
 
@@ -90,8 +91,9 @@ class PlanDeSeguimientoFragment : Fragment() {
                 val selectedCalendar = Calendar.getInstance()
                 selectedCalendar.set(selectedYear, selectedMonth, selectedDay)
                 fechaFin = selectedCalendar.timeInMillis
-                fechaFinTextView.text = "$selectedDay/${selectedMonth + 1}/$selectedYear"
+                fechaFinTextView.text = getString(R.string.fecha_seleccionada, selectedDay, selectedMonth + 1, selectedYear)
             }, year, month, day)
+
 
             val minFechaFin = Calendar.getInstance()
             minFechaFin.timeInMillis = fechaInicio

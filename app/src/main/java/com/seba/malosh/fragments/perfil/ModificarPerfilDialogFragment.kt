@@ -11,12 +11,6 @@ import com.seba.malosh.R
 
 class ModificarPerfilDialogFragment : DialogFragment() {
 
-    interface ModificarPerfilListener {
-        fun onPerfilModificado(nombre: String, apellido: String, correo: String)
-    }
-
-    private lateinit var listener: ModificarPerfilListener
-
     private lateinit var editNombre: EditText
     private lateinit var editApellido: EditText
     private lateinit var editCorreo: EditText
@@ -41,16 +35,11 @@ class ModificarPerfilDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        listener = try {
-            targetFragment as ModificarPerfilListener
-        } catch (e: ClassCastException) {
-            throw ClassCastException("$targetFragment debe implementar ModificarPerfilListener")
-        }
-
         editNombre = view.findViewById(R.id.edit_nombre)
         editApellido = view.findViewById(R.id.edit_apellido)
         editCorreo = view.findViewById(R.id.edit_correo)
 
+        // Establecer los valores actuales
         editNombre.setText(nombreActual)
         editApellido.setText(apellidoActual)
         editCorreo.setText(correoActual)
@@ -58,11 +47,17 @@ class ModificarPerfilDialogFragment : DialogFragment() {
         val btnGuardar: Button = view.findViewById(R.id.btn_guardar)
 
         btnGuardar.setOnClickListener {
-            val nuevoNombre = if (editNombre.text.toString().isNotBlank()) editNombre.text.toString() else nombreActual
-            val nuevoApellido = if (editApellido.text.toString().isNotBlank()) editApellido.text.toString() else apellidoActual
-            val nuevoCorreo = if (editCorreo.text.toString().isNotBlank()) editCorreo.text.toString() else correoActual
+            val nuevoNombre = editNombre.text.toString().ifBlank { nombreActual }
+            val nuevoApellido = editApellido.text.toString().ifBlank { apellidoActual }
+            val nuevoCorreo = editCorreo.text.toString().ifBlank { correoActual }
 
-            listener.onPerfilModificado(nuevoNombre, nuevoApellido, nuevoCorreo)
+            val result = Bundle().apply {
+                putString("nombre_modificado", nuevoNombre)
+                putString("apellido_modificado", nuevoApellido)
+                putString("correo_modificado", nuevoCorreo)
+            }
+
+            parentFragmentManager.setFragmentResult("modificarPerfilRequestKey", result)
 
             dismiss()
         }

@@ -1,5 +1,6 @@
 package com.seba.malosh.fragments.metas
 
+import android.Manifest
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,7 +16,10 @@ import com.seba.malosh.fragments.progresos.logros.listaLogros
 import com.seba.malosh.fragments.progresos.logros.Logro
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.pm.PackageManager
 import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import java.text.SimpleDateFormat
@@ -37,7 +41,11 @@ class ResumenFragment : Fragment() {
         private const val HABITOS_KEY = "habitos"
         private const val CHANNEL_ID = "logros_channel"
 
-        fun newInstance(fechaInicio: String, fechaFin: String, habitos: ArrayList<String>): ResumenFragment {
+        fun newInstance(
+            fechaInicio: String,
+            fechaFin: String,
+            habitos: ArrayList<String>
+        ): ResumenFragment {
             val fragment = ResumenFragment()
             val bundle = Bundle()
             bundle.putString(FECHA_INICIO_KEY, fechaInicio)
@@ -48,6 +56,7 @@ class ResumenFragment : Fragment() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -63,8 +72,11 @@ class ResumenFragment : Fragment() {
         fechaFin = arguments?.getString(FECHA_FIN_KEY)
         habitos = arguments?.getStringArrayList(HABITOS_KEY)
 
-        periodoSeleccionadoTextView.text = "Periodo: $fechaInicio - $fechaFin"
-        habitoSeleccionadoTextView.text = "Hábitos seleccionados: ${habitos?.joinToString(", ")}"
+        periodoSeleccionadoTextView.text =
+            getString(R.string.periodo_seleccionado, fechaInicio, fechaFin)
+        habitoSeleccionadoTextView.text =
+            getString(R.string.habitos_seleccionados, habitos?.joinToString(", "))
+
 
         volverButton.setOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()
@@ -84,25 +96,42 @@ class ResumenFragment : Fragment() {
     }
 
     private fun guardarMetaEnProgreso() {
-        val sharedPreferences = requireContext().getSharedPreferences("MetaPrefs", Context.MODE_PRIVATE)
+        val sharedPreferences =
+            requireContext().getSharedPreferences("MetaPrefs", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
 
-        val fechaInicioLong = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(fechaInicio)?.time ?: 0L
-        val fechaFinLong = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(fechaFin)?.time ?: 0L
+        val fechaInicioLong = fechaInicio?.let {
+            SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(
+                it
+            )?.time
+        }
+            ?: 0L
+        val fechaFinLong = fechaFin?.let {
+            SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(
+                it
+            )?.time
+        }
+            ?: 0L
 
-        if (fechaInicioLong > 0 && fechaFinLong > fechaInicioLong) {
+        if (fechaInicioLong in 1..<fechaFinLong) {
             editor.putBoolean("plan_iniciado", true)
             editor.putBoolean("meta_en_progreso", true)
             editor.putLong("fecha_inicio_meta", fechaInicioLong)
             editor.putLong("fecha_fin_meta", fechaFinLong)
             editor.apply()
         } else {
-            Toast.makeText(context, "Error al guardar las fechas del plan. Por favor, revisa las fechas seleccionadas.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                context,
+                "Error al guardar las fechas del plan. Por favor, revisa las fechas seleccionadas.",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun verificarDesbloqueoLogros() {
-        val sharedPreferences = requireContext().getSharedPreferences("LogrosPrefs", Context.MODE_PRIVATE)
+        val sharedPreferences =
+            requireContext().getSharedPreferences("LogrosPrefs", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
 
         val logroPrimerMeta = listaLogros.firstOrNull { it.id == 1 }
@@ -115,6 +144,7 @@ class ResumenFragment : Fragment() {
         editor.apply()
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun mostrarNotificacionLogro(logro: Logro) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
@@ -135,6 +165,23 @@ class ResumenFragment : Fragment() {
             .setContentText(logro.titulo)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+
+            val requestCodeNotification = 0
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                requestCodeNotification
+            )
+
+            return
+        }
+
         NotificationManagerCompat.from(requireContext()).notify(logro.id, builder.build())
+
     }
 }

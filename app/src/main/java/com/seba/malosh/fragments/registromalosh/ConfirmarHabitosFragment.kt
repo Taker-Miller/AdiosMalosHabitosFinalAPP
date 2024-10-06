@@ -58,7 +58,7 @@ class ConfirmarHabitosFragment : Fragment() {
         siButton.setOnClickListener {
             val habitCount = selectedHabits?.size ?: 0
 
-            if (habitCount >= 2 && habitCount <= 4) {
+            if (habitCount in 2..4) {
                 Toast.makeText(
                     context,
                     "Malos hábitos registrados exitosamente",

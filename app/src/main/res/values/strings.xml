@@ -55,4 +55,61 @@
     <string name="casi_por_terminar">Casi por Terminar</string>
     <string name="D_diarios">Desafíos Diarios</string>
     <string name="desafios_completados">Desafíos Completados</string>
+    <string name="periodo_seleccionado">Periodo: %1$s - %2$s</string>
+    <string name="habitos_seleccionados">Hábitos seleccionados: %1$s</string>
+    <string name="mensaje_bienvenida">¡Bienvenido %1$s %2$s!</string>
+    <string name="mensaje_correo">Tu correo es: %1$s</string>
+    <string name="fecha_seleccionada">%1$d/%2$d/%3$d</string>
+
+        <string name="tiempo_restante">Próximo desafío disponible en %1$d segundos.</string>
+        <string name="nuevo_desafio">¡Nuevo desafío disponible!</string>
+        <string name="tiempo_restante_desafio">Desafío en progreso. Tiempo restante: %1$d segundos.</string>
+        <string name="desafio_completado">¡Desafío completado exitosamente!</string>
+        <string name="desafio_fallido">Desafío fallido. No completaste todas las etapas.</string>
+        <string name="tiempo_restante_20s">Próximo desafío disponible en 20 segundos.</string>
+        <string name="desafio_ya_en_progreso">Ya tienes un desafío en progreso. Finaliza o cancela el desafío actual primero.</string>
+        <string name="desafio_aceptado">¡Desafío aceptado!</string>
+
+        <string name="desafio_cafeina_1">No tomes café en las próximas 3 horas.</string>
+        <string name="desafio_cafeina_2">Reemplaza el café de la tarde con agua.</string>
+        <string name="desafio_cafeina_3">No consumas cafeína después de las 3 p.m.</string>
+        <string name="desafio_dormir_1">No tomes siestas durante el día.</string>
+        <string name="desafio_dormir_2">Duerme al menos 7 horas esta noche.</string>
+        <string name="desafio_dormir_3">Apaga tus dispositivos electrónicos 30 minutos antes de dormir.</string>
+        <string name="desafio_dormir_4">Evita tomar bebidas con cafeína después de las 5 p.m.</string>
+        <string name="desafio_dormir_5">Realiza una rutina de relajación antes de dormir.</string>
+        <string name="desafio_dormir_6">Intenta acostarte antes de las 11 p.m. esta noche.</string>
+        <string name="desafio_interrumpir_1">No interrumpas a nadie durante las próximas 3 horas.</string>
+        <string name="desafio_interrumpir_2">Escucha activamente en una conversación sin interrumpir.</string>
+        <string name="desafio_interrumpir_3">Deja que los demás terminen de hablar antes de dar tu opinión en la próxima conversación.</string>
+        <string name="desafio_alimentacion_1">Evita la comida rápida durante todo el día.</string>
+        <string name="desafio_alimentacion_2">Come tres comidas balanceadas hoy.</string>
+        <string name="desafio_alimentacion_3">Reemplaza los snacks poco saludables por frutas o verduras.</string>
+        <string name="desafio_alimentacion_4">Reduce el consumo de azúcares en tu próxima comida.</string>
+        <string name="desafio_fumar_1">No fumes durante las próximas 4 horas.</string>
+        <string name="desafio_fumar_2">Evita fumar un cigarrillo después de cada comida hoy.</string>
+        <string name="desafio_fumar_3">Intenta reducir tu consumo de cigarrillos a la mitad durante el día.</string>
+        <string name="desafio_fumar_4">Fuma solo la mitad de tu cigarrillo en tu próximo descanso.</string>
+        <string name="desafio_alcohol_1">No consumas alcohol durante las próximas 4 horas.</string>
+        <string name="desafio_alcohol_2">No consumas bebidas alcohólicas durante todo el día.</string>
+        <string name="desafio_alcohol_3">Evita tomar más de una copa de alcohol durante las próximas 5 horas.</string>
+        <string name="desafio_alcohol_4">Reemplaza el alcohol con agua o una bebida sin alcohol en tu próxima comida.</string>
+        <string name="desafio_ejercicio_1">Realiza una caminata de al menos 30 minutos hoy.</string>
+        <string name="desafio_ejercicio_2">Haz 15 minutos de estiramientos esta mañana.</string>
+        <string name="desafio_ejercicio_3">Realiza 10 flexiones durante tu próximo descanso.</string>
+        <string name="desafio_ejercicio_4">Sube las escaleras en lugar de usar el ascensor durante el día.</string>
+        <string name="desafio_comer_1">No comas nada después de las 9 p.m.</string>
+        <string name="desafio_comer_2">Establece horarios regulares para tus comidas y cúmplelos hoy.</string>
+        <string name="desafio_comer_3">No comas nada entre comidas durante las próximas 3 horas.</string>
+        <string name="desafio_comer_4">Desayuna dentro de la primera hora después de despertar.</string>
+        <string name="desafio_higiene_1">Cepilla tus dientes después de cada comida hoy.</string>
+        <string name="desafio_higiene_2">Lávate las manos antes y después de cada comida.</string>
+        <string name="desafio_higiene_3">Dedica 10 minutos a limpiar tu espacio personal hoy.</string>
+        <string name="desafio_higiene_4">Toma una ducha antes de acostarte esta noche.</string>
+        <string name="no_desafios">No hay desafíos disponibles.</string>
+        <string name="sin_desafio">No se encontraron desafíos para el hábito: %1$s</string>
+
+
+
+
 </resources>

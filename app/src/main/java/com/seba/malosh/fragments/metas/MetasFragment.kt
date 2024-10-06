@@ -55,14 +55,15 @@ class MetasFragment : Fragment() {
             } else {
                 val planDeSeguimientoFragment =
                     PlanDeSeguimientoFragment.newInstance(ArrayList(selectedHabits))
-                fragmentManager?.beginTransaction()
-                    ?.replace(R.id.fragment_container, planDeSeguimientoFragment)
-                    ?.addToBackStack(null)
-                    ?.commit()
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, planDeSeguimientoFragment)
+                    .addToBackStack(null)
+                    .commit()
             }
         }
 
         return view
+
     }
 
     companion object {

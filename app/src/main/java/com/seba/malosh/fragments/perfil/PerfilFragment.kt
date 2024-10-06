@@ -12,7 +12,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.seba.malosh.R
 
-class PerfilFragment : Fragment(), ModificarPerfilDialogFragment.ModificarPerfilListener {
+class PerfilFragment : Fragment() {
 
     private lateinit var nombreUsuarioTextView: TextView
     private lateinit var apellidoUsuarioTextView: TextView
@@ -43,6 +43,27 @@ class PerfilFragment : Fragment(), ModificarPerfilDialogFragment.ModificarPerfil
 
         cargarDatosUsuario()
 
+        // Escuchar los resultados de ModificarPerfilDialogFragment
+        parentFragmentManager.setFragmentResultListener("modificarPerfilRequestKey", viewLifecycleOwner) { _, bundle ->
+            val nombre = bundle.getString("nombre_modificado")
+            val apellido = bundle.getString("apellido_modificado")
+            val correo = bundle.getString("correo_modificado")
+
+            // Actualizar la UI con los datos recibidos
+            if (!nombre.isNullOrEmpty()) nombreUsuarioTextView.text = nombre
+            if (!apellido.isNullOrEmpty()) apellidoUsuarioTextView.text = apellido
+            if (!correo.isNullOrEmpty()) correoUsuarioTextView.text = correo
+
+            // Guardar los cambios en SharedPreferences
+            val sharedPreferences = activity?.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+            val editor = sharedPreferences?.edit()
+
+            editor?.putString("nombre_usuario", nombre)
+            editor?.putString("apellido_usuario", apellido)
+            editor?.putString("correo_usuario", correo)
+            editor?.apply()
+        }
+
         btnEditarPerfil.setOnClickListener {
             val dialog = ModificarPerfilDialogFragment()
             dialog.setDatosActuales(
@@ -50,7 +71,6 @@ class PerfilFragment : Fragment(), ModificarPerfilDialogFragment.ModificarPerfil
                 apellidoUsuarioTextView.text.toString(),
                 correoUsuarioTextView.text.toString()
             )
-            dialog.setTargetFragment(this, 0)
             dialog.show(parentFragmentManager, "ModificarPerfilDialog")
         }
 
@@ -90,27 +110,5 @@ class PerfilFragment : Fragment(), ModificarPerfilDialogFragment.ModificarPerfil
             .create()
 
         dialog.show()
-    }
-
-    override fun onPerfilModificado(nombre: String, apellido: String, correo: String) {
-        val sharedPreferences = activity?.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
-        val editor = sharedPreferences?.edit()
-
-        if (nombre.isNotBlank()) {
-            nombreUsuarioTextView.text = nombre
-            editor?.putString("nombre_usuario", nombre)
-        }
-
-        if (apellido.isNotBlank()) {
-            apellidoUsuarioTextView.text = apellido
-            editor?.putString("apellido_usuario", apellido)
-        }
-
-        if (correo.isNotBlank()) {
-            correoUsuarioTextView.text = correo
-            editor?.putString("correo_usuario", correo)
-        }
-
-        editor?.apply()
     }
 }

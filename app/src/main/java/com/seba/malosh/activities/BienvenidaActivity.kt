@@ -25,12 +25,11 @@ import com.seba.malosh.fragments.reflexionesd.ReflexionesDiariasFragment
 import com.seba.malosh.fragments.registromalosh.SeleccionarHabitosFragment
 import com.seba.malosh.fragments.registromalosh.TusMalosHabitosFragment
 import com.seba.malosh.R
-import com.seba.malosh.fragments.perfil.ModificarPerfilDialogFragment
 import com.seba.malosh.fragments.perfil.PerfilFragment
 import com.seba.malosh.receivers.PlanInicioReceiver
 import java.util.*
 
-class BienvenidaActivity : AppCompatActivity(), ModificarPerfilDialogFragment.ModificarPerfilListener {
+class BienvenidaActivity : AppCompatActivity() {
 
     private val registeredHabits = ArrayList<String>()
     private var planEnProgreso = false
@@ -60,6 +59,18 @@ class BienvenidaActivity : AppCompatActivity(), ModificarPerfilDialogFragment.Mo
         titleTextView = findViewById(R.id.titleTextView)
         descriptionTextView = findViewById(R.id.descriptionTextView)
         notificationAdviceTextView = findViewById(R.id.notificationAdviceTextView)
+
+        // Listener para recibir los resultados del ModificarPerfilDialogFragment
+        supportFragmentManager.setFragmentResultListener("modificarPerfilRequestKey", this) { _, bundle ->
+            val nombre = bundle.getString("nombre_modificado")
+            val apellido = bundle.getString("apellido_modificado")
+            val correo = bundle.getString("correo_modificado")
+
+            // Actualizar la UI con los datos recibidos
+            titleTextView.text = getString(R.string.mensaje_bienvenida, nombre, apellido)
+            descriptionTextView.text = getString(R.string.mensaje_correo, correo)
+            Toast.makeText(this, "Perfil actualizado: $nombre $apellido, $correo", Toast.LENGTH_SHORT).show()
+        }
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -203,25 +214,6 @@ class BienvenidaActivity : AppCompatActivity(), ModificarPerfilDialogFragment.Mo
         mostrarElementosUI()
     }
 
-    fun finalizarPlan() {
-        planEnProgreso = false
-        mostrarElementosUI()
-    }
-
-    private fun guardarHoraFinalizacionDesafio() {
-        val sharedPreferences = getSharedPreferences("DesafioPrefs", Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.putLong("hora_finalizacion_desafio", System.currentTimeMillis())
-        editor.apply()
-    }
-
-    private fun hanPasado24HorasDesdeUltimoDesafio(): Boolean {
-        val sharedPreferences = getSharedPreferences("DesafioPrefs", Context.MODE_PRIVATE)
-        val horaFinalizacion = sharedPreferences.getLong("hora_finalizacion_desafio", 0L)
-        val tiempoActual = System.currentTimeMillis()
-        return (tiempoActual - horaFinalizacion) >= 24 * 60 * 60 * 1000
-    }
-
     private fun programarNotificacion(fechaInicio: Calendar) {
         val alarmManager = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -254,11 +246,5 @@ class BienvenidaActivity : AppCompatActivity(), ModificarPerfilDialogFragment.Mo
             val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
             scheduleExactAlarmLauncher.launch(intent)
         }
-    }
-
-    override fun onPerfilModificado(nombre: String, apellido: String, correo: String) {
-        Toast.makeText(this, "Perfil actualizado: $nombre $apellido, $correo", Toast.LENGTH_SHORT).show()
-        titleTextView.text = "Bienvenido, $nombre $apellido"
-        descriptionTextView.text = "Correo: $correo"
     }
 }
