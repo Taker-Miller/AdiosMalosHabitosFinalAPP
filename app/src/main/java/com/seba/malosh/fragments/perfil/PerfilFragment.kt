@@ -1,5 +1,6 @@
 package com.seba.malosh.fragments.perfil
 
+import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,12 +15,12 @@ import com.seba.malosh.R
 class PerfilFragment : Fragment(), ModificarPerfilDialogFragment.ModificarPerfilListener {
 
     private lateinit var nombreUsuarioTextView: TextView
+    private lateinit var apellidoUsuarioTextView: TextView
     private lateinit var correoUsuarioTextView: TextView
     private lateinit var imagenPerfilImageView: ImageView
     private lateinit var btnCambiarImagenPerfil: Button
     private lateinit var btnEditarPerfil: Button
 
-    // Arreglo con los recursos de las imágenes de perfil
     private val imagenesPerfil = arrayOf(
         R.drawable.image_perfil_1,
         R.drawable.image_perfil_2,
@@ -33,56 +34,54 @@ class PerfilFragment : Fragment(), ModificarPerfilDialogFragment.ModificarPerfil
     ): View? {
         val view = inflater.inflate(R.layout.fragment_perfil, container, false)
 
-        // Inicializamos las vistas
         nombreUsuarioTextView = view.findViewById(R.id.nombre_usuario)
+        apellidoUsuarioTextView = view.findViewById(R.id.apellido_usuario)
         correoUsuarioTextView = view.findViewById(R.id.correo_usuario)
         imagenPerfilImageView = view.findViewById(R.id.imagen_perfil)
         btnCambiarImagenPerfil = view.findViewById(R.id.btn_editar_imagen_perfil)
         btnEditarPerfil = view.findViewById(R.id.btn_editar_perfil)
 
-        // Acción para editar el nombre y correo
+        cargarDatosUsuario()
+
         btnEditarPerfil.setOnClickListener {
             val dialog = ModificarPerfilDialogFragment()
-            dialog.show(childFragmentManager, "ModificarPerfilDialog")
+            dialog.setDatosActuales(
+                nombreUsuarioTextView.text.toString(),
+                apellidoUsuarioTextView.text.toString(),
+                correoUsuarioTextView.text.toString()
+            )
+            dialog.setTargetFragment(this, 0)
+            dialog.show(parentFragmentManager, "ModificarPerfilDialog")
         }
 
-        // Acción para cambiar la imagen de perfil
         btnCambiarImagenPerfil.setOnClickListener {
             mostrarOpcionesImagen()
         }
-
-        // Cargar datos del usuario
-        cargarDatosUsuario()
 
         return view
     }
 
     private fun cargarDatosUsuario() {
-        // Obtener los datos del usuario de SharedPreferences o usar valores predeterminados
         val sharedPreferences = activity?.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
-        val imagenGuardada = sharedPreferences?.getInt("imagen_perfil", R.drawable.image_perfil_1)
-        val nombreGuardado = sharedPreferences?.getString("nombre_usuario", "Sebastián Villalobos")
+        val nombreGuardado = sharedPreferences?.getString("nombre_usuario", "Sebastián")
+        val apellidoGuardado = sharedPreferences?.getString("apellido_usuario", "Villalobos")
         val correoGuardado = sharedPreferences?.getString("correo_usuario", "sebastian@example.com")
+        val imagenGuardada = sharedPreferences?.getInt("imagen_perfil", R.drawable.image_perfil_1)
 
-        // Cargar la imagen guardada o predeterminada
-        imagenPerfilImageView.setImageResource(imagenGuardada ?: R.drawable.image_perfil_1)
-
-        // Cargar el nombre y el correo
         nombreUsuarioTextView.text = nombreGuardado
+        apellidoUsuarioTextView.text = apellidoGuardado
         correoUsuarioTextView.text = correoGuardado
+        imagenPerfilImageView.setImageResource(imagenGuardada ?: R.drawable.image_perfil_1)
     }
 
     private fun mostrarOpcionesImagen() {
-        // Mostrar un diálogo con las opciones de imagen de perfil
         val opciones = arrayOf("Imagen 1", "Imagen 2", "Imagen 3", "Imagen 4")
 
-        val dialog = android.app.AlertDialog.Builder(context)
+        val dialog = AlertDialog.Builder(context)
             .setTitle("Selecciona una imagen de perfil")
             .setItems(opciones) { _, which ->
-                // Cambiar la imagen de perfil según la opción seleccionada
                 imagenPerfilImageView.setImageResource(imagenesPerfil[which])
 
-                // Guardar la selección en SharedPreferences
                 val sharedPreferences = activity?.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
                 val editor = sharedPreferences?.edit()
                 editor?.putInt("imagen_perfil", imagenesPerfil[which])
@@ -93,17 +92,25 @@ class PerfilFragment : Fragment(), ModificarPerfilDialogFragment.ModificarPerfil
         dialog.show()
     }
 
-    // Implementación de la interfaz para recibir los nuevos datos del diálogo
-    override fun onPerfilModificado(nombre: String, correo: String) {
-        // Actualizamos las vistas con los nuevos datos
-        nombreUsuarioTextView.text = nombre
-        correoUsuarioTextView.text = correo
-
-        // Guardar los nuevos datos en SharedPreferences
+    override fun onPerfilModificado(nombre: String, apellido: String, correo: String) {
         val sharedPreferences = activity?.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
         val editor = sharedPreferences?.edit()
-        editor?.putString("nombre_usuario", nombre)
-        editor?.putString("correo_usuario", correo)
+
+        if (nombre.isNotBlank()) {
+            nombreUsuarioTextView.text = nombre
+            editor?.putString("nombre_usuario", nombre)
+        }
+
+        if (apellido.isNotBlank()) {
+            apellidoUsuarioTextView.text = apellido
+            editor?.putString("apellido_usuario", apellido)
+        }
+
+        if (correo.isNotBlank()) {
+            correoUsuarioTextView.text = correo
+            editor?.putString("correo_usuario", correo)
+        }
+
         editor?.apply()
     }
 }

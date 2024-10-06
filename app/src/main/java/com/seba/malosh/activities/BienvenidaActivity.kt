@@ -73,14 +73,11 @@ class BienvenidaActivity : AppCompatActivity(), ModificarPerfilDialogFragment.Mo
         })
     }
 
-
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.menu_navegacion, menu)
         return true
     }
-
-
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
@@ -100,9 +97,8 @@ class BienvenidaActivity : AppCompatActivity(), ModificarPerfilDialogFragment.Mo
             }
 
             R.id.menu_item_perfil -> {
-                // Lógica para abrir la pantalla de perfil
                 ocultarElementosUI()
-                val fragment = PerfilFragment() // Asegúrate de tener este fragment creado
+                val fragment = PerfilFragment()
                 val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
                 transaction.replace(R.id.fragment_container, fragment)
                 transaction.addToBackStack(null)
@@ -260,9 +256,9 @@ class BienvenidaActivity : AppCompatActivity(), ModificarPerfilDialogFragment.Mo
         }
     }
 
-
-    override fun onPerfilModificado(nombre: String, correo: String) {
-        Toast.makeText(this, "Perfil actualizado: $nombre, $correo", Toast.LENGTH_SHORT).show()
-
+    override fun onPerfilModificado(nombre: String, apellido: String, correo: String) {
+        Toast.makeText(this, "Perfil actualizado: $nombre $apellido, $correo", Toast.LENGTH_SHORT).show()
+        titleTextView.text = "Bienvenido, $nombre $apellido"
+        descriptionTextView.text = "Correo: $correo"
     }
 }
