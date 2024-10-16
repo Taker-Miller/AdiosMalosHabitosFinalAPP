@@ -1,3 +1,5 @@
+package com.seba.malosh.fragments.desafios
+
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -5,11 +7,11 @@ import androidx.lifecycle.ViewModel
 
 class DesafiosCompletadosViewModel : ViewModel() {
 
-    // LiveData para mantener los desafíos completados
+
     private val _desafiosCompletados = MutableLiveData<List<String>>()
     val desafiosCompletados: LiveData<List<String>> get() = _desafiosCompletados
 
-    // Función para cargar los datos
+
     fun cargarDesafiosCompletados(context: Context) {
         val sharedPreferences = context.getSharedPreferences("DesafiosCompletados", Context.MODE_PRIVATE)
         val desafiosCompletadosList = mutableListOf<String>()
@@ -27,7 +29,7 @@ class DesafiosCompletadosViewModel : ViewModel() {
             desafiosCompletadosList.add("Aún no has completado desafíos.")
         }
 
-        // Actualizar LiveData
+
         _desafiosCompletados.value = desafiosCompletadosList
     }
 }

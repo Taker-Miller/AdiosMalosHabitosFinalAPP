@@ -1,7 +1,5 @@
 package com.seba.malosh.fragments.desafios
 
-import DesafiosCompletadosViewModel
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +9,6 @@ import android.widget.ListView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import com.seba.malosh.R
 
 class DesafiosCompletadosFragment : Fragment() {
@@ -27,10 +24,11 @@ class DesafiosCompletadosFragment : Fragment() {
         listaDesafios = view.findViewById(R.id.listaDesafiosCompletados)
 
         // Observar cambios en los desafíos completados
-        viewModel.desafiosCompletados.observe(viewLifecycleOwner, Observer { desafios ->
-            val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, desafios)
+        viewModel.desafiosCompletados.observe(viewLifecycleOwner) { desafios ->
+            val adapter =
+                ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, desafios)
             listaDesafios.adapter = adapter
-        })
+        }
 
         // Cargar los datos en el ViewModel
         viewModel.cargarDesafiosCompletados(requireContext())

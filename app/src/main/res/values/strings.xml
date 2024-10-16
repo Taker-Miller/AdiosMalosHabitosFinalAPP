@@ -108,8 +108,7 @@
         <string name="desafio_higiene_4">Toma una ducha antes de acostarte esta noche.</string>
         <string name="no_desafios">No hay desafíos disponibles.</string>
         <string name="sin_desafio">No se encontraron desafíos para el hábito: %1$s</string>
-
-
+    <string name="estado_dia">Día %1$s marcado como %2$s</string>
 
 
 </resources>

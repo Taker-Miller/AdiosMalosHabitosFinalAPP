@@ -24,17 +24,17 @@ class LogrosFragment : Fragment() {
         recyclerViewLogros = view.findViewById(R.id.recyclerViewLogros)
         recyclerViewLogros.layoutManager = LinearLayoutManager(requireContext())
 
-        // Inicializar el adaptador de logros
+
         logroAdapter = LogroAdapter(listaLogros)
         recyclerViewLogros.adapter = logroAdapter
 
-        // Manejar el comportamiento del botón "Volver"
+
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (parentFragmentManager.backStackEntryCount > 0) {
-                    parentFragmentManager.popBackStack() // Volver al fragmento anterior
+                    parentFragmentManager.popBackStack()
                 } else {
-                    requireActivity().finish() // Cerrar la actividad si no hay más fragmentos en la pila
+                    requireActivity().finish()
                 }
             }
         })

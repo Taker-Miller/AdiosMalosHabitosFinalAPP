@@ -2,20 +2,25 @@ package com.seba.malosh.fragments.progresos.metas
 
 import ProgresoMetaViewModel
 import android.app.AlertDialog
-import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.CalendarView
+import android.widget.Spinner
+import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.seba.malosh.R
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
 
 class ProgresoMetaFragment : Fragment() {
 
@@ -25,7 +30,7 @@ class ProgresoMetaFragment : Fragment() {
     private val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     private val monthFormat = SimpleDateFormat("MMMM yyyy", Locale("es", "ES"))
 
-    // Usamos el ViewModel para mantener los datos
+
     private val viewModel: ProgresoMetaViewModel by activityViewModels()
 
     companion object {
@@ -55,7 +60,7 @@ class ProgresoMetaFragment : Fragment() {
         estadoDiaTextView = view.findViewById(R.id.estadoDiaTextView)
         mesSpinner = view.findViewById(R.id.mesSpinner)
 
-        // Recuperar datos desde los argumentos y cargarlos en el ViewModel
+
         val fechaInicio = arguments?.getLong(FECHA_INICIO_KEY) ?: 0L
         val fechaFin = arguments?.getLong(FECHA_FIN_KEY) ?: 0L
         val habitos = arguments?.getStringArrayList(HABITOS_KEY) ?: arrayListOf()
@@ -65,13 +70,13 @@ class ProgresoMetaFragment : Fragment() {
         configurarCalendario()
         configurarMesesSpinner()
 
-        // Manejar el comportamiento del botón "Volver"
+
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (parentFragmentManager.backStackEntryCount > 0) {
-                    parentFragmentManager.popBackStack() // Volver al fragmento anterior
+                    parentFragmentManager.popBackStack()
                 } else {
-                    requireActivity().finish() // Cerrar la actividad si no hay más fragmentos en la pila
+                    requireActivity().finish()
                 }
             }
         })
@@ -81,9 +86,9 @@ class ProgresoMetaFragment : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun configurarCalendario() {
-        // Obtenemos la fecha de inicio y fin desde el ViewModel
+
         val fechaInicio = viewModel.fechaInicio.value ?: System.currentTimeMillis()
-        val fechaFin = viewModel.fechaFin.value ?: System.currentTimeMillis() + 31536000000L
+        val fechaFin = viewModel.fechaFin.value ?: (System.currentTimeMillis() + 31536000000L)
 
         calendarioMeta.minDate = fechaInicio
         calendarioMeta.maxDate = fechaFin
@@ -162,7 +167,7 @@ class ProgresoMetaFragment : Fragment() {
             viewModel.actualizarEstadoDia(fecha, estado)
             actualizarVisualizacionCalendario(fecha, estado)
             Toast.makeText(context, "Día $fecha marcado como $estado", Toast.LENGTH_SHORT).show()
-            estadoDiaTextView.text = "Día $fecha marcado como $estado"
+            estadoDiaTextView.text = getString(R.string.estado_dia, fecha, estado)
         }
         builder.show()
     }
@@ -170,7 +175,7 @@ class ProgresoMetaFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.M)
     private fun actualizarVisualizacionCalendario(fecha: String, estado: String) {
         val calendar = Calendar.getInstance()
-        calendar.time = dateFormat.parse(fecha)
+        calendar.time = dateFormat.parse(fecha)!!
         actualizarColorFecha(calendar, estado)
     }
 
