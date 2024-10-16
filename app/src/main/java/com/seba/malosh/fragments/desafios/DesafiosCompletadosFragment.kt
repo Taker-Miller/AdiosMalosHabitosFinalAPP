@@ -23,25 +23,24 @@ class DesafiosCompletadosFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_desafios_completados, container, false)
         listaDesafios = view.findViewById(R.id.listaDesafiosCompletados)
 
-        // Observar cambios en los desafíos completados
         viewModel.desafiosCompletados.observe(viewLifecycleOwner) { desafios ->
             val adapter =
                 ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, desafios)
             listaDesafios.adapter = adapter
         }
 
-        // Cargar los datos en el ViewModel
+
         viewModel.cargarDesafiosCompletados(requireContext())
 
-        // Gestionar el comportamiento del botón "Volver"
+
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                // Aquí defines qué hacer cuando el usuario presiona el botón "Volver"
+
                 if (parentFragmentManager.backStackEntryCount > 0) {
-                    // Si hay fragmentos en la pila de retroceso, volvemos al fragmento anterior
+
                     parentFragmentManager.popBackStack()
                 } else {
-                    // Si no hay más fragmentos en la pila, salir de la actividad o comportamiento predeterminado
+
                     requireActivity().finish()
                 }
             }
