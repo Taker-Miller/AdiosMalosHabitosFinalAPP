@@ -1,13 +1,16 @@
 package com.seba.malosh.fragments.progresos.metas
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import com.seba.malosh.R
+import com.seba.malosh.activities.BienvenidaActivity
 import com.seba.malosh.fragments.desafios.DesafiosCompletadosFragment
 import com.seba.malosh.fragments.progresos.logros.LogrosFragment
 
@@ -58,6 +61,15 @@ class ProgresoFragment : Fragment() {
                 .addToBackStack(null)
                 .commit()
         }
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                val intent = Intent(requireActivity(), BienvenidaActivity::class.java)
+                intent.putStringArrayListExtra("habitos", obtenerHabitosRegistrados())
+                startActivity(intent)
+                requireActivity().finish()
+            }
+        })
 
         return view
     }

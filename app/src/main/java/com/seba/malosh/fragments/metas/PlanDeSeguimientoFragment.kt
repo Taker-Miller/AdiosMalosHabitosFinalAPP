@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.seba.malosh.R
 import java.util.Calendar
@@ -64,9 +65,7 @@ class PlanDeSeguimientoFragment : Fragment() {
                 fechaInicioTextView.text = getString(R.string.fecha_seleccionada, selectedDay, selectedMonth + 1, selectedYear)
             }, year, month, day)
 
-
             datePickerInicio.datePicker.minDate = calendar.timeInMillis
-
             val endOfMonth = Calendar.getInstance()
             endOfMonth.set(year, month, endOfMonth.getActualMaximum(Calendar.DAY_OF_MONTH))
             datePickerInicio.datePicker.maxDate = endOfMonth.timeInMillis
@@ -82,7 +81,6 @@ class PlanDeSeguimientoFragment : Fragment() {
 
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = fechaInicio
-
             val year = calendar.get(Calendar.YEAR)
             val month = calendar.get(Calendar.MONTH)
             val day = calendar.get(Calendar.DAY_OF_MONTH)
@@ -93,7 +91,6 @@ class PlanDeSeguimientoFragment : Fragment() {
                 fechaFin = selectedCalendar.timeInMillis
                 fechaFinTextView.text = getString(R.string.fecha_seleccionada, selectedDay, selectedMonth + 1, selectedYear)
             }, year, month, day)
-
 
             val minFechaFin = Calendar.getInstance()
             minFechaFin.timeInMillis = fechaInicio
@@ -131,6 +128,12 @@ class PlanDeSeguimientoFragment : Fragment() {
         volverButton.setOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()
         }
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                requireActivity().supportFragmentManager.popBackStack()
+            }
+        })
 
         return view
     }

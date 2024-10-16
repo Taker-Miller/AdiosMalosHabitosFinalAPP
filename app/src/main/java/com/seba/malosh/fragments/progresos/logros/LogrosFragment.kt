@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,9 +24,20 @@ class LogrosFragment : Fragment() {
         recyclerViewLogros = view.findViewById(R.id.recyclerViewLogros)
         recyclerViewLogros.layoutManager = LinearLayoutManager(requireContext())
 
-
+        // Inicializar el adaptador de logros
         logroAdapter = LogroAdapter(listaLogros)
         recyclerViewLogros.adapter = logroAdapter
+
+        // Manejar el comportamiento del botón "Volver"
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (parentFragmentManager.backStackEntryCount > 0) {
+                    parentFragmentManager.popBackStack() // Volver al fragmento anterior
+                } else {
+                    requireActivity().finish() // Cerrar la actividad si no hay más fragmentos en la pila
+                }
+            }
+        })
 
         return view
     }

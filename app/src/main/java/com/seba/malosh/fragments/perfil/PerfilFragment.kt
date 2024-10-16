@@ -2,6 +2,7 @@ package com.seba.malosh.fragments.perfil
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,8 +10,10 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.seba.malosh.R
+import com.seba.malosh.activities.BienvenidaActivity
 
 class PerfilFragment : Fragment() {
 
@@ -43,18 +46,15 @@ class PerfilFragment : Fragment() {
 
         cargarDatosUsuario()
 
-        // Escuchar los resultados de ModificarPerfilDialogFragment
         parentFragmentManager.setFragmentResultListener("modificarPerfilRequestKey", viewLifecycleOwner) { _, bundle ->
             val nombre = bundle.getString("nombre_modificado")
             val apellido = bundle.getString("apellido_modificado")
             val correo = bundle.getString("correo_modificado")
 
-            // Actualizar la UI con los datos recibidos
             if (!nombre.isNullOrEmpty()) nombreUsuarioTextView.text = nombre
             if (!apellido.isNullOrEmpty()) apellidoUsuarioTextView.text = apellido
             if (!correo.isNullOrEmpty()) correoUsuarioTextView.text = correo
 
-            // Guardar los cambios en SharedPreferences
             val sharedPreferences = activity?.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
             val editor = sharedPreferences?.edit()
 
@@ -77,6 +77,14 @@ class PerfilFragment : Fragment() {
         btnCambiarImagenPerfil.setOnClickListener {
             mostrarOpcionesImagen()
         }
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                val intent = Intent(requireActivity(), BienvenidaActivity::class.java)
+                startActivity(intent)
+                requireActivity().finish()
+            }
+        })
 
         return view
     }
