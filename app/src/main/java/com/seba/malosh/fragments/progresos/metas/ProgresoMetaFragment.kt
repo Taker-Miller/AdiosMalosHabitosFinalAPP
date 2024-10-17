@@ -27,9 +27,9 @@ class ProgresoMetaFragment : Fragment() {
     private lateinit var calendarioMeta: CalendarView
     private lateinit var estadoDiaTextView: TextView
     private lateinit var mesSpinner: Spinner
+    private lateinit var habitoSpinner: Spinner
     private val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     private val monthFormat = SimpleDateFormat("MMMM yyyy", Locale("es", "ES"))
-
 
     private val viewModel: ProgresoMetaViewModel by activityViewModels()
 
@@ -59,7 +59,7 @@ class ProgresoMetaFragment : Fragment() {
         calendarioMeta = view.findViewById(R.id.calendarioMeta)
         estadoDiaTextView = view.findViewById(R.id.estadoDiaTextView)
         mesSpinner = view.findViewById(R.id.mesSpinner)
-
+        habitoSpinner = view.findViewById(R.id.habitoSpinner)
 
         val fechaInicio = arguments?.getLong(FECHA_INICIO_KEY) ?: 0L
         val fechaFin = arguments?.getLong(FECHA_FIN_KEY) ?: 0L
@@ -69,7 +69,7 @@ class ProgresoMetaFragment : Fragment() {
 
         configurarCalendario()
         configurarMesesSpinner()
-
+        configurarHabitoSpinner()
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -86,7 +86,6 @@ class ProgresoMetaFragment : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun configurarCalendario() {
-
         val fechaInicio = viewModel.fechaInicio.value ?: System.currentTimeMillis()
         val fechaFin = viewModel.fechaFin.value ?: (System.currentTimeMillis() + 31536000000L)
 
@@ -113,17 +112,19 @@ class ProgresoMetaFragment : Fragment() {
                 selectedDate.get(Calendar.DAY_OF_MONTH) == today.get(Calendar.DAY_OF_MONTH)
     }
 
-    private fun configurarMesesSpinner() {
-        val mesesList = obtenerMesesDentroDeRango()
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, mesesList)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        mesSpinner.adapter = adapter
 
-        mesSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+    private fun configurarHabitoSpinner() {
+        val habitos = viewModel.habitos.value ?: emptyList()
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, habitos)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        habitoSpinner.adapter = adapter
+
+        habitoSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             @RequiresApi(Build.VERSION_CODES.M)
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                val mesSeleccionadoNombre = mesesList[position]
-                mostrarEstadoDiasParaMes(mesSeleccionadoNombre)
+                val habitoSeleccionado = habitos[position]
+                Toast.makeText(context, "Hábito seleccionado: $habitoSeleccionado", Toast.LENGTH_SHORT).show()
+                mostrarEstadoDiasParaHabito(habitoSeleccionado)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {}
@@ -131,7 +132,7 @@ class ProgresoMetaFragment : Fragment() {
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
-    private fun mostrarEstadoDiasParaMes(mesSeleccionado: String) {
+    private fun mostrarEstadoDiasParaHabito(habitoSeleccionado: String) {
         val calendar = Calendar.getInstance()
         val estados = StringBuilder()
 
@@ -141,14 +142,11 @@ class ProgresoMetaFragment : Fragment() {
         while (fechaActual <= fechaFin) {
             calendar.timeInMillis = fechaActual
             val fechaFormateada = dateFormat.format(calendar.time)
-            val mesFormateado = monthFormat.format(calendar.time)
+            val estado = viewModel.obtenerEstadoParaHabito(habitoSeleccionado, fechaFormateada)
 
-            if (mesFormateado == mesSeleccionado) {
-                val estado = viewModel.estadoDias[fechaFormateada]
-                if (estado != null) {
-                    estados.append("Día: $fechaFormateada - Estado: $estado\n")
-                    actualizarColorFecha(calendar, estado)
-                }
+            if (estado != null) {
+                estados.append("Día: $fechaFormateada - Estado: $estado\n")
+                actualizarColorFecha(calendar, estado)
             }
 
             fechaActual += 24 * 60 * 60 * 1000
@@ -205,5 +203,49 @@ class ProgresoMetaFragment : Fragment() {
         }
 
         return mesesList
+    }
+
+    private fun configurarMesesSpinner() {
+        val mesesList = obtenerMesesDentroDeRango()
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, mesesList)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        mesSpinner.adapter = adapter
+
+        mesSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            @RequiresApi(Build.VERSION_CODES.M)
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                val mesSeleccionadoNombre = mesesList[position]
+                mostrarEstadoDiasParaMes(mesSeleccionadoNombre)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun mostrarEstadoDiasParaMes(mesSeleccionado: String) {
+        val calendar = Calendar.getInstance()
+        val estados = StringBuilder()
+
+        var fechaActual = viewModel.fechaInicio.value ?: 0L
+        val fechaFin = viewModel.fechaFin.value ?: System.currentTimeMillis()
+
+        while (fechaActual <= fechaFin) {
+            calendar.timeInMillis = fechaActual
+            val fechaFormateada = dateFormat.format(calendar.time)
+            val mesFormateado = monthFormat.format(calendar.time)
+
+            if (mesFormateado == mesSeleccionado) {
+                val estado = viewModel.estadoDias[fechaFormateada]
+                if (estado != null) {
+                    estados.append("Día: $fechaFormateada - Estado: $estado\n")
+                    actualizarColorFecha(calendar, estado)
+                }
+            }
+
+            fechaActual += 24 * 60 * 60 * 1000
+        }
+
+        estadoDiaTextView.text = estados.toString()
     }
 }

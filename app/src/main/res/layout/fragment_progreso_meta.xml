@@ -2,13 +2,35 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center"
+    android:gravity="center_horizontal"
     android:padding="24dp"
     android:background="@color/purple_dark">
 
-    <!-- Título estilizado -->
+    <!-- Spinner para seleccionar el hábito -->
     <TextView
-        android:id="@+id/periodoSeleccionadoTextView"
+        android:id="@+id/habitoSeleccionadoTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Selecciona el Hábito"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:fontFamily="@font/roboto_medium"
+        android:layout_marginBottom="8dp" />
+
+    <Spinner
+        android:id="@+id/habitoSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:padding="8dp"
+        android:background="@drawable/spinner_background" />
+
+
+
+    <!-- Spinner para seleccionar el mes -->
+    <TextView
+        android:id="@+id/mesSeleccionadoTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Selecciona el Mes"
@@ -16,35 +38,15 @@
         android:textColor="@color/white"
         android:textStyle="bold"
         android:fontFamily="@font/roboto_medium"
-        android:layout_marginBottom="20dp" />
+        android:layout_marginBottom="8dp" />
 
-    <!-- Spinner para seleccionar el hábito -->
-    <Spinner
-        android:id="@+id/habitoSpinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:padding="12dp"
-        android:background="@drawable/spinner_background" />
-
-    <!-- Texto para mostrar el hábito actual -->
-    <TextView
-        android:id="@+id/habitoActualTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Progreso para: Hábito Actual"
-        android:textSize="18sp"
-        android:textColor="@color/white"
-        android:fontFamily="@font/roboto_medium"
-        android:layout_marginBottom="20dp" />
-
-    <!-- Spinner con diseño moderno para seleccionar el mes -->
     <Spinner
         android:id="@+id/mesSpinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:padding="12dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:padding="8dp"
         android:background="@drawable/spinner_background" />
 
     <!-- Calendario con fondo sólido -->
@@ -52,7 +54,7 @@
         android:id="@+id/calendarioMeta"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="16dp"
         android:background="@color/white" />
 
     <!-- Estado del día con fondo estilizado -->
@@ -62,10 +64,10 @@
         android:layout_height="wrap_content"
         android:text="Estado del Día"
         android:textSize="18sp"
-        android:padding="16dp"
+        android:padding="12dp"
         android:textColor="@color/text_color_secondary"
         android:background="@drawable/textview_background"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="16dp"
         android:gravity="center"
         android:textStyle="bold"
         android:fontFamily="@font/roboto_medium"
