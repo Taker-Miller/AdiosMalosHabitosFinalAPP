@@ -18,7 +18,27 @@
         android:fontFamily="@font/roboto_medium"
         android:layout_marginBottom="20dp" />
 
-    <!-- Spinner con diseño moderno -->
+    <!-- Spinner para seleccionar el hábito -->
+    <Spinner
+        android:id="@+id/habitoSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:padding="12dp"
+        android:background="@drawable/spinner_background" />
+
+    <!-- Texto para mostrar el hábito actual -->
+    <TextView
+        android:id="@+id/habitoActualTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Progreso para: Hábito Actual"
+        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:fontFamily="@font/roboto_medium"
+        android:layout_marginBottom="20dp" />
+
+    <!-- Spinner con diseño moderno para seleccionar el mes -->
     <Spinner
         android:id="@+id/mesSpinner"
         android:layout_width="match_parent"
@@ -35,6 +55,7 @@
         android:layout_marginBottom="24dp"
         android:background="@color/white" />
 
+    <!-- Estado del día con fondo estilizado -->
     <TextView
         android:id="@+id/estadoDiaTextView"
         android:layout_width="match_parent"

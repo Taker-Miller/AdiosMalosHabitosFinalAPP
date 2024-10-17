@@ -21,7 +21,11 @@ class PlanDeSeguimientoFragment : Fragment() {
     private lateinit var fechaFinButton: Button
     private lateinit var fechaInicioTextView: TextView
     private lateinit var fechaFinTextView: TextView
+    private lateinit var habitoActualTextView: TextView
+
     private var selectedHabits: ArrayList<String> = arrayListOf()
+    private var habitIndex = 0
+    private var fechasHabitos: MutableMap<String, Pair<Long, Long>> = mutableMapOf()
     private var fechaInicio: Long = 0
     private var fechaFin: Long = 0
 
@@ -49,8 +53,12 @@ class PlanDeSeguimientoFragment : Fragment() {
         fechaFinButton = view.findViewById(R.id.fechaFinButton)
         fechaInicioTextView = view.findViewById(R.id.fechaInicioTextView)
         fechaFinTextView = view.findViewById(R.id.fechaFinTextView)
+        habitoActualTextView = view.findViewById(R.id.habitoActualTextView)
 
         selectedHabits = arguments?.getStringArrayList(SELECTED_HABITS_KEY) ?: arrayListOf()
+
+
+        actualizarVistaHabitoActual()
 
         fechaInicioButton.setOnClickListener {
             val calendar = Calendar.getInstance()
@@ -62,14 +70,16 @@ class PlanDeSeguimientoFragment : Fragment() {
                 val selectedCalendar = Calendar.getInstance()
                 selectedCalendar.set(selectedYear, selectedMonth, selectedDay)
                 fechaInicio = selectedCalendar.timeInMillis
-                fechaInicioTextView.text = getString(R.string.fecha_seleccionada, selectedDay, selectedMonth + 1, selectedYear)
+                fechaInicioTextView.text = getString(
+                    R.string.fecha_seleccionada,
+                    selectedDay, selectedMonth + 1, selectedYear
+                )
+
+                fechaFin = 0
+                fechaFinTextView.text = ""
             }, year, month, day)
 
             datePickerInicio.datePicker.minDate = calendar.timeInMillis
-            val endOfMonth = Calendar.getInstance()
-            endOfMonth.set(year, month, endOfMonth.getActualMaximum(Calendar.DAY_OF_MONTH))
-            datePickerInicio.datePicker.maxDate = endOfMonth.timeInMillis
-
             datePickerInicio.show()
         }
 
@@ -89,8 +99,22 @@ class PlanDeSeguimientoFragment : Fragment() {
                 val selectedCalendar = Calendar.getInstance()
                 selectedCalendar.set(selectedYear, selectedMonth, selectedDay)
                 fechaFin = selectedCalendar.timeInMillis
-                fechaFinTextView.text = getString(R.string.fecha_seleccionada, selectedDay, selectedMonth + 1, selectedYear)
+
+                val selectedYearDifference = selectedYear - calendar.get(Calendar.YEAR)
+                if (selectedYearDifference < 1) {
+                    Toast.makeText(context, "La fecha de fin debe ser al menos un año después de la fecha de inicio.", Toast.LENGTH_SHORT).show()
+                    fechaFin = 0
+                } else if (selectedYearDifference > 3) {
+                    Toast.makeText(context, "La fecha de fin no puede ser más de 3 años después de la fecha de inicio.", Toast.LENGTH_SHORT).show()
+                    fechaFin = 0
+                } else {
+                    fechaFinTextView.text = getString(
+                        R.string.fecha_seleccionada,
+                        selectedDay, selectedMonth + 1, selectedYear
+                    )
+                }
             }, year, month, day)
+
 
             val minFechaFin = Calendar.getInstance()
             minFechaFin.timeInMillis = fechaInicio
@@ -102,7 +126,6 @@ class PlanDeSeguimientoFragment : Fragment() {
 
             datePickerFin.datePicker.minDate = minFechaFin.timeInMillis
             datePickerFin.datePicker.maxDate = maxFechaFin.timeInMillis
-
             datePickerFin.show()
         }
 
@@ -112,16 +135,8 @@ class PlanDeSeguimientoFragment : Fragment() {
             } else if (fechaInicio >= fechaFin) {
                 Toast.makeText(context, "La fecha de fin debe ser posterior a la fecha de inicio.", Toast.LENGTH_SHORT).show()
             } else {
-                val resumenFragment = ResumenFragment.newInstance(
-                    fechaInicioTextView.text.toString(),
-                    fechaFinTextView.text.toString(),
-                    selectedHabits
-                )
-
-                requireActivity().supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, resumenFragment)
-                    .addToBackStack(null)
-                    .commit()
+                guardarFechasHabitoActual()
+                avanzarOEnviarAlResumen()
             }
         }
 
@@ -136,5 +151,54 @@ class PlanDeSeguimientoFragment : Fragment() {
         })
 
         return view
+    }
+
+    private fun actualizarVistaHabitoActual() {
+        if (habitIndex < selectedHabits.size) {
+            val habitoActual = selectedHabits[habitIndex]
+            habitoActualTextView.text = "Configurando: $habitoActual"
+            fechaInicioTextView.text = ""
+            fechaFinTextView.text = ""
+            fechaInicio = 0L
+            fechaFin = 0L
+        }
+    }
+
+    private fun guardarFechasHabitoActual() {
+        val habitoActual = selectedHabits[habitIndex]
+        fechasHabitos[habitoActual] = Pair(fechaInicio, fechaFin)
+        Toast.makeText(context, "Fechas guardadas para $habitoActual", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun avanzarOEnviarAlResumen() {
+        if (habitIndex < selectedHabits.size - 1) {
+            habitIndex++
+            actualizarVistaHabitoActual()
+        } else {
+            enviarAlResumenFragment()
+        }
+    }
+
+    private fun enviarAlResumenFragment() {
+        val resumenFragment = ResumenFragment.newInstance(
+            fechasHabitos.map { it.key to Pair(
+                formatFecha(it.value.first),
+                formatFecha(it.value.second)
+            ) } as ArrayList<Pair<String, Pair<String, String>>>
+        )
+
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, resumenFragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
+    private fun formatFecha(millis: Long): String {
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = millis
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        val month = calendar.get(Calendar.MONTH) + 1
+        val year = calendar.get(Calendar.YEAR)
+        return getString(R.string.fecha_seleccionada, day, month, year)
     }
 }

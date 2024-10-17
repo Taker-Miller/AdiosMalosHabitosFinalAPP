@@ -18,6 +18,16 @@
         android:textSize="24sp"
         android:layout_marginBottom="16dp" />
 
+    <!-- Texto para mostrar el hábito actual -->
+    <TextView
+        android:id="@+id/habitoActualTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Configurando: Hábito Actual"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:layout_marginBottom="16dp" />
+
     <!-- CardView para contener las opciones de fechas -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -83,7 +93,7 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-    <!-- Botones para definir el plan y volver -->
+    <!-- Botones para definir el plan, avanzar al siguiente hábito y volver -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -103,6 +113,8 @@
             android:layout_marginEnd="8dp"
             android:elevation="4dp"
             android:textSize="16sp" />
+
+
 
         <!-- Botón para volver -->
         <Button
