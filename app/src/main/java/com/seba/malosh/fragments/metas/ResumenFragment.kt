@@ -31,19 +31,26 @@ class ResumenFragment : Fragment() {
     private lateinit var comenzarPlanButton: Button
     private lateinit var periodoSeleccionadoTextView: TextView
     private lateinit var habitoSeleccionadoTextView: TextView
-    private var fechasHabitos: ArrayList<Pair<String, Pair<String, String>>>? = null
+    private var fechaInicio: String? = null
+    private var fechaFin: String? = null
+    private var habitos: ArrayList<String>? = null
 
     companion object {
-        private const val FECHAS_HABITOS_KEY = "fechas_habitos"
+        private const val FECHA_INICIO_KEY = "fecha_inicio"
+        private const val FECHA_FIN_KEY = "fecha_fin"
+        private const val HABITOS_KEY = "habitos"
         private const val CHANNEL_ID = "logros_channel"
 
-
         fun newInstance(
-            fechasHabitos: ArrayList<Pair<String, Pair<String, String>>>
+            fechaInicio: String,
+            fechaFin: String,
+            habitos: ArrayList<String>
         ): ResumenFragment {
             val fragment = ResumenFragment()
             val bundle = Bundle()
-            bundle.putSerializable(FECHAS_HABITOS_KEY, fechasHabitos)
+            bundle.putString(FECHA_INICIO_KEY, fechaInicio)
+            bundle.putString(FECHA_FIN_KEY, fechaFin)
+            bundle.putStringArrayList(HABITOS_KEY, habitos)
             fragment.arguments = bundle
             return fragment
         }
@@ -61,9 +68,15 @@ class ResumenFragment : Fragment() {
         periodoSeleccionadoTextView = view.findViewById(R.id.periodoSeleccionado)
         habitoSeleccionadoTextView = view.findViewById(R.id.habitoSeleccionado)
 
-        fechasHabitos = arguments?.getSerializable(FECHAS_HABITOS_KEY) as ArrayList<Pair<String, Pair<String, String>>>
+        fechaInicio = arguments?.getString(FECHA_INICIO_KEY)
+        fechaFin = arguments?.getString(FECHA_FIN_KEY)
+        habitos = arguments?.getStringArrayList(HABITOS_KEY)
 
-        mostrarResumen()
+        periodoSeleccionadoTextView.text =
+            getString(R.string.periodo_seleccionado, fechaInicio, fechaFin)
+        habitoSeleccionadoTextView.text =
+            getString(R.string.habitos_seleccionados, habitos?.joinToString(", "))
+
 
         volverButton.setOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()
@@ -82,47 +95,37 @@ class ResumenFragment : Fragment() {
         return view
     }
 
-    private fun mostrarResumen() {
-        val resumenBuilder = StringBuilder()
-        fechasHabitos?.forEach { (habito, fechas) ->
-            val (fechaInicio, fechaFin) = fechas
-            resumenBuilder.append("Hábito: $habito\n")
-            resumenBuilder.append("Fecha de inicio: $fechaInicio\n")
-            resumenBuilder.append("Fecha de fin: $fechaFin\n\n")
-        }
-        periodoSeleccionadoTextView.text = resumenBuilder.toString()
-        habitoSeleccionadoTextView.text = getString(R.string.habitos_seleccionados, fechasHabitos?.joinToString(", ") { it.first })
-    }
-
     private fun guardarMetaEnProgreso() {
         val sharedPreferences =
             requireContext().getSharedPreferences("MetaPrefs", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
 
-        fechasHabitos?.forEach { (habito, fechas) ->
-            val (fechaInicioStr, fechaFinStr) = fechas
-            val fechaInicioLong = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(
-                fechaInicioStr
-            )?.time ?: 0L
-            val fechaFinLong = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(
-                fechaFinStr
-            )?.time ?: 0L
-
-            if (fechaInicioLong < fechaFinLong) {
-                editor.putBoolean("plan_iniciado_$habito", true)
-                editor.putBoolean("meta_en_progreso_$habito", true)
-                editor.putLong("fecha_inicio_meta_$habito", fechaInicioLong)
-                editor.putLong("fecha_fin_meta_$habito", fechaFinLong)
-            } else {
-                Toast.makeText(
-                    context,
-                    "Error al guardar las fechas del plan para $habito.",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+        val fechaInicioLong = fechaInicio?.let {
+            SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(
+                it
+            )?.time
         }
+            ?: 0L
+        val fechaFinLong = fechaFin?.let {
+            SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(
+                it
+            )?.time
+        }
+            ?: 0L
 
-        editor.apply()
+        if (fechaInicioLong in 1..<fechaFinLong) {
+            editor.putBoolean("plan_iniciado", true)
+            editor.putBoolean("meta_en_progreso", true)
+            editor.putLong("fecha_inicio_meta", fechaInicioLong)
+            editor.putLong("fecha_fin_meta", fechaFinLong)
+            editor.apply()
+        } else {
+            Toast.makeText(
+                context,
+                "Error al guardar las fechas del plan. Por favor, revisa las fechas seleccionadas.",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -179,5 +182,6 @@ class ResumenFragment : Fragment() {
         }
 
         NotificationManagerCompat.from(requireContext()).notify(logro.id, builder.build())
+
     }
 }

@@ -26,7 +26,26 @@
         android:padding="8dp"
         android:background="@drawable/spinner_background" />
 
+    <!-- Fechas de inicio y fin del plan -->
+    <TextView
+        android:id="@+id/fechaInicioTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Fecha de Inicio: "
+        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:layout_marginBottom="8dp"
+        android:fontFamily="@font/roboto_medium" />
 
+    <TextView
+        android:id="@+id/fechaFinTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Fecha de Fin: "
+        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:layout_marginBottom="16dp"
+        android:fontFamily="@font/roboto_medium" />
 
     <!-- Spinner para seleccionar el mes -->
     <TextView

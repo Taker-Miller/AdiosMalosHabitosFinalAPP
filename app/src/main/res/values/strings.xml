@@ -69,6 +69,8 @@
         <string name="tiempo_restante_20s">Próximo desafío disponible en 20 segundos.</string>
         <string name="desafio_ya_en_progreso">Ya tienes un desafío en progreso. Finaliza o cancela el desafío actual primero.</string>
         <string name="desafio_aceptado">¡Desafío aceptado!</string>
+    <string name="configurando_habito">Configurando: %1$s</string>
+    <string name="fecha_dia_seleccionada">Fecha seleccionada: %1$s</string>
 
         <string name="desafio_cafeina_1">No tomes café en las próximas 3 horas.</string>
         <string name="desafio_cafeina_2">Reemplaza el café de la tarde con agua.</string>
