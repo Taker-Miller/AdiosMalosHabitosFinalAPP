@@ -60,7 +60,8 @@
     <string name="mensaje_bienvenida">¡Bienvenido %1$s %2$s!</string>
     <string name="mensaje_correo">Tu correo es: %1$s</string>
     <string name="fecha_seleccionada">%1$d/%2$d/%3$d</string>
-
+    <string name="fecha_inicio">Fecha de Inicio: %1$s</string>
+    <string name="fecha_fin">Fecha de Fin: %1$s</string>
         <string name="tiempo_restante">Próximo desafío disponible en %1$d segundos.</string>
         <string name="nuevo_desafio">¡Nuevo desafío disponible!</string>
         <string name="tiempo_restante_desafio">Desafío en progreso. Tiempo restante: %1$d segundos.</string>

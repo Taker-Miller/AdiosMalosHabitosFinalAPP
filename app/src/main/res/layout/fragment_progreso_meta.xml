@@ -2,54 +2,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center_horizontal"
+    android:gravity="center"
     android:padding="24dp"
     android:background="@color/purple_dark">
 
-    <!-- Spinner para seleccionar el hábito -->
+    <!-- Título estilizado -->
     <TextView
-        android:id="@+id/habitoSeleccionadoTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Selecciona el Hábito"
-        android:textSize="20sp"
-        android:textColor="@color/white"
-        android:textStyle="bold"
-        android:fontFamily="@font/roboto_medium"
-        android:layout_marginBottom="8dp" />
-
-    <Spinner
-        android:id="@+id/habitoSpinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:padding="8dp"
-        android:background="@drawable/spinner_background" />
-
-    <!-- Fechas de inicio y fin del plan -->
-    <TextView
-        android:id="@+id/fechaInicioTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Fecha de Inicio: "
-        android:textSize="18sp"
-        android:textColor="@color/white"
-        android:layout_marginBottom="8dp"
-        android:fontFamily="@font/roboto_medium" />
-
-    <TextView
-        android:id="@+id/fechaFinTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Fecha de Fin: "
-        android:textSize="18sp"
-        android:textColor="@color/white"
-        android:layout_marginBottom="16dp"
-        android:fontFamily="@font/roboto_medium" />
-
-    <!-- Spinner para seleccionar el mes -->
-    <TextView
-        android:id="@+id/mesSeleccionadoTextView"
+        android:id="@+id/periodoSeleccionadoTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Selecciona el Mes"
@@ -57,39 +16,40 @@
         android:textColor="@color/white"
         android:textStyle="bold"
         android:fontFamily="@font/roboto_medium"
-        android:layout_marginBottom="8dp" />
+        android:layout_marginBottom="20dp" />
 
+    <!-- Spinner con diseño moderno -->
     <Spinner
         android:id="@+id/mesSpinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="16dp"
-        android:padding="8dp"
+        android:layout_marginBottom="20dp"
+        android:padding="12dp"
         android:background="@drawable/spinner_background" />
 
-    <!-- Calendario con fondo sólido -->
+    <!-- Calendario con estilo sutil -->
     <CalendarView
         android:id="@+id/calendarioMeta"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:background="@color/white" />
+        android:dateTextAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:layout_marginBottom="24dp"
+        android:backgroundTint="@color/secondary_background_color" />
 
-    <!-- Estado del día con fondo estilizado -->
     <TextView
         android:id="@+id/estadoDiaTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Estado del Día"
         android:textSize="18sp"
-        android:padding="12dp"
+        android:padding="16dp"
         android:textColor="@color/text_color_secondary"
         android:background="@drawable/textview_background"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="20dp"
         android:gravity="center"
         android:textStyle="bold"
         android:fontFamily="@font/roboto_medium"
         android:elevation="4dp" />
+
 
 </LinearLayout>

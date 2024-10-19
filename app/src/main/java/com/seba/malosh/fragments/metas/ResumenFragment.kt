@@ -18,45 +18,29 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.pm.PackageManager
 import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 class ResumenFragment : Fragment() {
 
     private lateinit var volverButton: Button
     private lateinit var comenzarPlanButton: Button
-    private lateinit var periodoSeleccionadoTextView: TextView
-    private lateinit var habitoSeleccionadoTextView: TextView
-    private var fechaInicio: String? = null
-    private var fechaFin: String? = null
-    private var habitos: ArrayList<String>? = null
+    private lateinit var detallesTextView: TextView // Usaremos este TextView para mostrar todos los hábitos y fechas
 
     companion object {
-        private const val FECHA_INICIO_KEY = "fecha_inicio"
-        private const val FECHA_FIN_KEY = "fecha_fin"
-        private const val HABITOS_KEY = "habitos"
+        private const val HABITOS_CON_FECHAS_KEY = "habitos_con_fechas"
         private const val CHANNEL_ID = "logros_channel"
 
-        fun newInstance(
-            fechaInicio: String,
-            fechaFin: String,
-            habitos: ArrayList<String>
-        ): ResumenFragment {
+        fun newInstance(habitosConFechas: ArrayList<Pair<String, Pair<String, String>>>): ResumenFragment {
             val fragment = ResumenFragment()
             val bundle = Bundle()
-            bundle.putString(FECHA_INICIO_KEY, fechaInicio)
-            bundle.putString(FECHA_FIN_KEY, fechaFin)
-            bundle.putStringArrayList(HABITOS_KEY, habitos)
+            bundle.putSerializable(HABITOS_CON_FECHAS_KEY, habitosConFechas)
             fragment.arguments = bundle
             return fragment
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -65,18 +49,20 @@ class ResumenFragment : Fragment() {
 
         volverButton = view.findViewById(R.id.volverButton)
         comenzarPlanButton = view.findViewById(R.id.comenzarPlanButton)
-        periodoSeleccionadoTextView = view.findViewById(R.id.periodoSeleccionado)
-        habitoSeleccionadoTextView = view.findViewById(R.id.habitoSeleccionado)
+        detallesTextView = view.findViewById(R.id.detallesTextView) // TextView para mostrar hábitos y fechas
 
-        fechaInicio = arguments?.getString(FECHA_INICIO_KEY)
-        fechaFin = arguments?.getString(FECHA_FIN_KEY)
-        habitos = arguments?.getStringArrayList(HABITOS_KEY)
+        // Obtener los hábitos con sus respectivas fechas
+        val habitosConFechas = arguments?.getSerializable(HABITOS_CON_FECHAS_KEY) as? ArrayList<Pair<String, Pair<String, String>>>
 
-        periodoSeleccionadoTextView.text =
-            getString(R.string.periodo_seleccionado, fechaInicio, fechaFin)
-        habitoSeleccionadoTextView.text =
-            getString(R.string.habitos_seleccionados, habitos?.joinToString(", "))
+        // Mostrar cada hábito con su respectiva fecha de inicio y fin en un solo TextView
+        val detalles = habitosConFechas?.joinToString(separator = "\n") { habitoConFechas ->
+            val habito = habitoConFechas.first
+            val fechaInicio = habitoConFechas.second.first
+            val fechaFin = habitoConFechas.second.second
+            "$habito: $fechaInicio - $fechaFin"
+        }
 
+        detallesTextView.text = detalles
 
         volverButton.setOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()
@@ -100,35 +86,11 @@ class ResumenFragment : Fragment() {
             requireContext().getSharedPreferences("MetaPrefs", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
 
-        val fechaInicioLong = fechaInicio?.let {
-            SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(
-                it
-            )?.time
-        }
-            ?: 0L
-        val fechaFinLong = fechaFin?.let {
-            SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(
-                it
-            )?.time
-        }
-            ?: 0L
-
-        if (fechaInicioLong in 1..<fechaFinLong) {
-            editor.putBoolean("plan_iniciado", true)
-            editor.putBoolean("meta_en_progreso", true)
-            editor.putLong("fecha_inicio_meta", fechaInicioLong)
-            editor.putLong("fecha_fin_meta", fechaFinLong)
-            editor.apply()
-        } else {
-            Toast.makeText(
-                context,
-                "Error al guardar las fechas del plan. Por favor, revisa las fechas seleccionadas.",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
+        editor.putBoolean("plan_iniciado", true)
+        editor.putBoolean("meta_en_progreso", true)
+        editor.apply()
     }
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun verificarDesbloqueoLogros() {
         val sharedPreferences =
             requireContext().getSharedPreferences("LogrosPrefs", Context.MODE_PRIVATE)
@@ -144,8 +106,8 @@ class ResumenFragment : Fragment() {
         editor.apply()
     }
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun mostrarNotificacionLogro(logro: Logro) {
+        // Solo solicitar permisos en Android 13 y versiones superiores
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 CHANNEL_ID,
@@ -165,23 +127,23 @@ class ResumenFragment : Fragment() {
             .setContentText(logro.titulo)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.POST_NOTIFICATIONS
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-
-            val requestCodeNotification = 0
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(Manifest.permission.POST_NOTIFICATIONS),
-                requestCodeNotification
-            )
-
-            return
+        // Solicitar permiso solo si la versión de Android lo requiere (Android 13+)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                val requestCodeNotification = 0
+                ActivityCompat.requestPermissions(
+                    requireActivity(),
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                    requestCodeNotification
+                )
+                return
+            }
         }
 
         NotificationManagerCompat.from(requireContext()).notify(logro.id, builder.build())
-
     }
 }

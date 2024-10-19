@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center"
+    android:gravity="start"
     android:padding="16dp"
     android:background="@color/purple_dark">
 
@@ -55,7 +55,7 @@
                 android:padding="16dp"
                 android:layout_marginBottom="16dp"
                 android:textSize="16sp"
-                android:elevation="4dp"/>
+                android:elevation="4dp" />
 
             <!-- Texto para mostrar la fecha de inicio seleccionada -->
             <TextView
@@ -113,8 +113,6 @@
             android:layout_marginEnd="8dp"
             android:elevation="4dp"
             android:textSize="16sp" />
-
-
 
         <!-- Botón para volver -->
         <Button

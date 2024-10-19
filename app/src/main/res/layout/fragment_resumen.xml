@@ -1,51 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:gravity="center"
     android:padding="16dp"
-    android:background="@color/purple_dark">
+    android:background="@drawable/background_gradient">
 
-    <!-- CardView para el periodo seleccionado -->
+    <!-- CardView para el contenido -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="8dp"
-        android:layout_marginBottom="16dp"
-        android:padding="16dp"
-        android:backgroundTint="@color/purple_light">
-
-        <TextView
-            android:id="@+id/periodoSeleccionado"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Periodo Seleccionado"
-            android:textSize="18sp"
-            android:textColor="@color/black"
-            android:layout_gravity="center" />
-    </androidx.cardview.widget.CardView>
-
-    <!-- CardView para los hábitos seleccionados -->
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="8dp"
         android:layout_marginBottom="24dp"
-        android:padding="16dp"
-        android:backgroundTint="@color/purple_light">
+        app:cardCornerRadius="20dp"
+        app:cardElevation="10dp"
+        android:padding="24dp"
+        android:backgroundTint="@android:color/white"
+        android:gravity="center">
 
+        <!-- TextView para mostrar los hábitos seleccionados y sus fechas -->
         <TextView
-            android:id="@+id/habitoSeleccionado"
+            android:id="@+id/detallesTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Hábitos Seleccionados"
+            android:text="Detalles de los hábitos seleccionados"
+            android:textColor="@color/purple_dark"
             android:textSize="18sp"
-            android:textColor="@color/black"
-            android:layout_gravity="center" />
+            android:textAlignment="center"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-light"
+            android:layout_marginBottom="16dp" />
     </androidx.cardview.widget.CardView>
 
     <!-- Botón para comenzar el plan -->
@@ -53,24 +38,29 @@
         android:id="@+id/comenzarPlanButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Comenzar Plan"
+        android:text="COMENZAR PLAN"
         android:textColor="@android:color/white"
         android:backgroundTint="@color/teal_dark"
         android:padding="16dp"
         android:layout_marginBottom="16dp"
-        android:elevation="4dp"
-        android:textSize="16sp" />
+        android:elevation="8dp"
+        android:textSize="18sp"
+        android:fontFamily="sans-serif-medium"
+        android:background="@drawable/button_gradient"
+        android:textAllCaps="true" />
 
     <!-- Botón para volver -->
     <Button
         android:id="@+id/volverButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Volver"
+        android:text="VOLVER"
         android:textColor="@android:color/white"
-        android:backgroundTint="@color/red"
         android:padding="16dp"
-        android:elevation="4dp"
-        android:textSize="16sp" />
+        android:elevation="8dp"
+        android:textSize="18sp"
+        android:fontFamily="sans-serif-medium"
+        android:background="@drawable/button_gradient_red"
+        android:textAllCaps="true" />
 
 </LinearLayout>
