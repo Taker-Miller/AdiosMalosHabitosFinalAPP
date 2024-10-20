@@ -1,6 +1,5 @@
 package com.seba.malosh.fragments.progresos.metas
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -21,16 +20,13 @@ class ProgresoFragment : Fragment() {
 
         val cardMeta: CardView = view.findViewById(R.id.card_meta)
         cardMeta.setOnClickListener {
-            val fechaInicio = obtenerFechaInicioMeta()
-            val fechaFin = obtenerFechaFinMeta()
-            val habitos = obtenerHabitosRegistrados()
-
-            val fragment = ProgresoMetaFragment.newInstance(fechaInicio, fechaFin, habitos)
+            val fragment = ProgresoMetaFragment()
             requireActivity().supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, fragment)
                 .addToBackStack(null)
                 .commit()
         }
+
 
         val cardLogros: CardView = view.findViewById(R.id.card_logros)
         cardLogros.setOnClickListener {
@@ -60,26 +56,5 @@ class ProgresoFragment : Fragment() {
         }
 
         return view
-    }
-
-    private fun verificarMetaEnProgreso(): Boolean {
-        val sharedPreferences = requireContext().getSharedPreferences("MetaPrefs", Context.MODE_PRIVATE)
-        return sharedPreferences.getBoolean("meta_en_progreso", false)
-    }
-
-    private fun obtenerFechaInicioMeta(): Long {
-        val sharedPreferences = requireContext().getSharedPreferences("MetaPrefs", Context.MODE_PRIVATE)
-        return sharedPreferences.getLong("fecha_inicio_meta", 0L)
-    }
-
-    private fun obtenerFechaFinMeta(): Long {
-        val sharedPreferences = requireContext().getSharedPreferences("MetaPrefs", Context.MODE_PRIVATE)
-        return sharedPreferences.getLong("fecha_fin_meta", 0L)
-    }
-
-    private fun obtenerHabitosRegistrados(): ArrayList<String> {
-        val sharedPreferences = requireContext().getSharedPreferences("HabitosPrefs", Context.MODE_PRIVATE)
-        val habitosSet = sharedPreferences.getStringSet("habitos_registrados", setOf())
-        return ArrayList(habitosSet ?: listOf())
     }
 }

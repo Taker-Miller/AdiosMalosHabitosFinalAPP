@@ -48,22 +48,24 @@ class MetasFragment : Fragment() {
                 }
             }
 
-            if (selectedHabits.isEmpty()) {
-                Toast.makeText(context, "Selecciona al menos un mal hábito para definir una meta.", Toast.LENGTH_SHORT).show()
-            } else if (selectedHabits.size > 2) {
-                Toast.makeText(context, "Solo puedes seleccionar hasta 2 malos hábitos.", Toast.LENGTH_SHORT).show()
-            } else {
-                val planDeSeguimientoFragment =
-                    PlanDeSeguimientoFragment.newInstance(ArrayList(selectedHabits))
-                parentFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, planDeSeguimientoFragment)
-                    .addToBackStack(null)
-                    .commit()
+            when {
+                selectedHabits.isEmpty() -> {
+                    Toast.makeText(context, "Selecciona al menos un mal hábito para definir una meta.", Toast.LENGTH_SHORT).show()
+                }
+                selectedHabits.size > 2 -> {
+                    Toast.makeText(context, "Solo puedes seleccionar hasta 2 malos hábitos.", Toast.LENGTH_SHORT).show()
+                }
+                else -> {
+                    val planDeSeguimientoFragment = PlanDeSeguimientoFragment.newInstance(ArrayList(selectedHabits))
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, planDeSeguimientoFragment)
+                        .addToBackStack(null)
+                        .commit()
+                }
             }
         }
 
         return view
-
     }
 
     companion object {

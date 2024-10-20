@@ -16,31 +16,38 @@ import com.seba.malosh.fragments.progresos.logros.listaLogros
 import com.seba.malosh.fragments.progresos.logros.Logro
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class ResumenFragment : Fragment() {
 
     private lateinit var volverButton: Button
     private lateinit var comenzarPlanButton: Button
-    private lateinit var detallesTextView: TextView // Usaremos este TextView para mostrar todos los hábitos y fechas
+    private lateinit var habitoSeleccionadoTextView: TextView
+    private var habitosConFechas: ArrayList<Pair<String, Pair<String, String>>>? = null
 
     companion object {
-        private const val HABITOS_CON_FECHAS_KEY = "habitos_con_fechas"
-        private const val CHANNEL_ID = "logros_channel"
+        private const val HABITOS_KEY = "habitos"
 
-        fun newInstance(habitosConFechas: ArrayList<Pair<String, Pair<String, String>>>): ResumenFragment {
+        fun newInstance(
+            habitosConFechas: ArrayList<Pair<String, Pair<String, String>>>
+        ): ResumenFragment {
             val fragment = ResumenFragment()
             val bundle = Bundle()
-            bundle.putSerializable(HABITOS_CON_FECHAS_KEY, habitosConFechas)
+            bundle.putSerializable(HABITOS_KEY, habitosConFechas)
             fragment.arguments = bundle
             return fragment
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -49,27 +56,24 @@ class ResumenFragment : Fragment() {
 
         volverButton = view.findViewById(R.id.volverButton)
         comenzarPlanButton = view.findViewById(R.id.comenzarPlanButton)
-        detallesTextView = view.findViewById(R.id.detallesTextView) // TextView para mostrar hábitos y fechas
+        habitoSeleccionadoTextView = view.findViewById(R.id.habitoSeleccionado)
 
-        // Obtener los hábitos con sus respectivas fechas
-        val habitosConFechas = arguments?.getSerializable(HABITOS_CON_FECHAS_KEY) as? ArrayList<Pair<String, Pair<String, String>>>
+        habitosConFechas = arguments?.getSerializable(HABITOS_KEY) as? ArrayList<Pair<String, Pair<String, String>>>
 
-        // Mostrar cada hábito con su respectiva fecha de inicio y fin en un solo TextView
         val detalles = habitosConFechas?.joinToString(separator = "\n") { habitoConFechas ->
             val habito = habitoConFechas.first
             val fechaInicio = habitoConFechas.second.first
             val fechaFin = habitoConFechas.second.second
             "$habito: $fechaInicio - $fechaFin"
         }
-
-        detallesTextView.text = detalles
+        habitoSeleccionadoTextView.text = detalles
 
         volverButton.setOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()
         }
 
         comenzarPlanButton.setOnClickListener {
-            guardarMetaEnProgreso()
+            iniciarNuevoPlan(habitosConFechas)
             verificarDesbloqueoLogros()
 
             (activity as? BienvenidaActivity)?.comenzarPlan()
@@ -81,16 +85,41 @@ class ResumenFragment : Fragment() {
         return view
     }
 
-    private fun guardarMetaEnProgreso() {
-        val sharedPreferences =
-            requireContext().getSharedPreferences("MetaPrefs", Context.MODE_PRIVATE)
+    private fun iniciarNuevoPlan(habitosConFechas: ArrayList<Pair<String, Pair<String, String>>>?) {
+        val sharedPreferences = requireContext().getSharedPreferences("MetaPrefs", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
 
-        editor.putBoolean("plan_iniciado", true)
-        editor.putBoolean("meta_en_progreso", true)
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+
+        limpiarDatosPrevios(editor)
+
+        habitosConFechas?.forEach { (habito, fechas) ->
+            val fechaInicioLong = dateFormat.parse(fechas.first)?.time ?: 0L
+            val fechaFinLong = dateFormat.parse(fechas.second)?.time ?: 0L
+
+            if (fechaInicioLong in 1..<fechaFinLong) {
+                editor.putBoolean("plan_iniciado", true)
+                editor.putBoolean("meta_en_progreso", true)
+                editor.putLong("fecha_inicio_meta_$habito", fechaInicioLong)
+                editor.putLong("fecha_fin_meta_$habito", fechaFinLong)
+            } else {
+                Toast.makeText(
+                    context,
+                    "Error al guardar las fechas del plan para el hábito $habito.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+
         editor.apply()
     }
 
+    private fun limpiarDatosPrevios(editor: SharedPreferences.Editor) {
+        editor.clear()
+        editor.apply()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun verificarDesbloqueoLogros() {
         val sharedPreferences =
             requireContext().getSharedPreferences("LogrosPrefs", Context.MODE_PRIVATE)
@@ -106,11 +135,11 @@ class ResumenFragment : Fragment() {
         editor.apply()
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun mostrarNotificacionLogro(logro: Logro) {
-        // Solo solicitar permisos en Android 13 y versiones superiores
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
-                CHANNEL_ID,
+                "logros_channel",
                 "Logros Desbloqueados",
                 NotificationManager.IMPORTANCE_DEFAULT
             ).apply {
@@ -121,27 +150,24 @@ class ResumenFragment : Fragment() {
             notificationManager.createNotificationChannel(channel)
         }
 
-        val builder = NotificationCompat.Builder(requireContext(), CHANNEL_ID)
+        val builder = NotificationCompat.Builder(requireContext(), "logros_channel")
             .setSmallIcon(R.drawable.ic_desbloqueado)
             .setContentTitle("¡Logro Desbloqueado!")
             .setContentText(logro.titulo)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
-        // Solicitar permiso solo si la versión de Android lo requiere (Android 13+)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ActivityCompat.checkSelfPermission(
-                    requireContext(),
-                    Manifest.permission.POST_NOTIFICATIONS
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                val requestCodeNotification = 0
-                ActivityCompat.requestPermissions(
-                    requireActivity(),
-                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
-                    requestCodeNotification
-                )
-                return
-            }
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            val requestCodeNotification = 0
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                requestCodeNotification
+            )
+            return
         }
 
         NotificationManagerCompat.from(requireContext()).notify(logro.id, builder.build())

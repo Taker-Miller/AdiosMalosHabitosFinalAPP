@@ -2,6 +2,7 @@ package com.seba.malosh.fragments.progresos.metas
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -19,6 +20,7 @@ class ProgresoMetaFragment : Fragment() {
 
     private lateinit var calendarioMeta: CalendarView
     private lateinit var estadoDiaTextView: TextView
+    private lateinit var habitoSpinner: Spinner
     private lateinit var habitos: ArrayList<String>
     private var fechaInicio: Long = 0
     private var fechaFin: Long = 0
@@ -49,34 +51,45 @@ class ProgresoMetaFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_progreso_meta, container, false)
 
-        val sharedPreferences = requireContext().getSharedPreferences("MetaPrefs", Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.clear()
-        editor.apply()
-
         calendarioMeta = view.findViewById(R.id.calendarioMeta)
         estadoDiaTextView = view.findViewById(R.id.estadoDiaTextView)
+        habitoSpinner = view.findViewById(R.id.habitoSpinner)
 
-        fechaInicio = arguments?.getLong(FECHA_INICIO_KEY) ?: 0L
-        fechaFin = arguments?.getLong(FECHA_FIN_KEY) ?: 0L
-        habitos = arguments?.getStringArrayList(HABITOS_KEY) ?: arrayListOf()
+        val sharedPreferences = requireContext().getSharedPreferences("MetaPrefs", Context.MODE_PRIVATE)
+        fechaInicio = sharedPreferences.getLong("fecha_inicio_meta", 0L)
+        fechaFin = sharedPreferences.getLong("fecha_fin_meta", 0L)
+        habitos = obtenerHabitosGuardados(sharedPreferences)
+
+        if (habitos.isEmpty()) {
+            Toast.makeText(context, "No hay hábitos guardados", Toast.LENGTH_SHORT).show()
+        }
 
         configurarCalendario()
+        configurarHabitosSpinner()
 
         return view
     }
 
+    private fun obtenerHabitosGuardados(sharedPreferences: SharedPreferences): ArrayList<String> {
+        val habitosList = arrayListOf<String>()
+        sharedPreferences.all.forEach { entry ->
+            if (entry.key.startsWith("fecha_inicio_meta_")) {
+                val habito = entry.key.removePrefix("fecha_inicio_meta_")
+                habitosList.add(habito)
+            }
+        }
+        return habitosList
+    }
+
     @RequiresApi(Build.VERSION_CODES.M)
     private fun configurarCalendario() {
-
         if (fechaInicio > 0 && fechaFin > fechaInicio) {
             calendarioMeta.minDate = fechaInicio
             calendarioMeta.maxDate = fechaFin
         } else {
             Toast.makeText(context, "Error al cargar las fechas de la meta. Por favor, reinicia la meta.", Toast.LENGTH_SHORT).show()
-
-            calendarioMeta.minDate = System.currentTimeMillis() // Fecha actual como mínimo
-            calendarioMeta.maxDate = System.currentTimeMillis() + 31536000000L // 1 año como máximo
+            calendarioMeta.minDate = System.currentTimeMillis()
+            calendarioMeta.maxDate = System.currentTimeMillis() + 31536000000L
         }
 
         calendarioMeta.setOnDateChangeListener { _, year, month, dayOfMonth ->
@@ -97,6 +110,25 @@ class ProgresoMetaFragment : Fragment() {
         return selectedDate.get(Calendar.YEAR) == today.get(Calendar.YEAR) &&
                 selectedDate.get(Calendar.MONTH) == today.get(Calendar.MONTH) &&
                 selectedDate.get(Calendar.DAY_OF_MONTH) == today.get(Calendar.DAY_OF_MONTH)
+    }
+
+    private fun configurarHabitosSpinner() {
+        if (habitos.isNotEmpty()) {
+            val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, habitos)
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            habitoSpinner.adapter = adapter
+
+            habitoSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                    val habitoSeleccionado = habitos[position]
+                    Toast.makeText(requireContext(), "Hábito seleccionado: $habitoSeleccionado", Toast.LENGTH_SHORT).show()
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>) {}
+            }
+        } else {
+            Toast.makeText(context, "No se encontraron hábitos guardados.", Toast.LENGTH_SHORT).show()
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
