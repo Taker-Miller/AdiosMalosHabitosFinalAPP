@@ -6,7 +6,7 @@
     android:padding="24dp"
     android:background="@color/purple_dark">
 
-    <!-- Título  para seleccionar el hábito -->
+    <!-- Título para seleccionar el hábito -->
     <TextView
         android:id="@+id/periodoSeleccionadoTextView"
         android:layout_width="wrap_content"
@@ -27,9 +27,9 @@
         android:padding="12dp"
         android:background="@drawable/spinner_background" />
 
-    <!-- TextView para mostrar las fechas de la meta del hábito seleccionado -->
+    <!-- Nuevo TextView para mostrar las fechas de la meta del hábito seleccionado -->
     <TextView
-        android:id="@+id/fechasMetaTextView"
+        android:id="@+id/fechasTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="18sp"
@@ -38,13 +38,15 @@
         android:layout_marginBottom="16dp"
         android:fontFamily="@font/roboto_medium" />
 
-    <!-- Calendario con estilo -->
+    <!-- Calendario con fondo sólido -->
     <CalendarView
         android:id="@+id/calendarioMeta"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
-        android:backgroundTint="@color/secondary_background_color" />
+        android:background="@color/white"
+        android:padding="8dp"
+        android:elevation="4dp" />
 
     <!-- Estado del Día -->
     <TextView

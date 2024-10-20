@@ -21,9 +21,8 @@ class ProgresoMetaFragment : Fragment() {
     private lateinit var calendarioMeta: CalendarView
     private lateinit var estadoDiaTextView: TextView
     private lateinit var habitoSpinner: Spinner
+    private lateinit var fechasTextView: TextView
     private lateinit var habitos: ArrayList<String>
-    private var fechaInicio: Long = 0
-    private var fechaFin: Long = 0
     private val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
     private val viewModel: ProgresoMetaViewModel by activityViewModels()
@@ -54,18 +53,19 @@ class ProgresoMetaFragment : Fragment() {
         calendarioMeta = view.findViewById(R.id.calendarioMeta)
         estadoDiaTextView = view.findViewById(R.id.estadoDiaTextView)
         habitoSpinner = view.findViewById(R.id.habitoSpinner)
+        fechasTextView = view.findViewById(R.id.fechasTextView)
+
 
         val sharedPreferences = requireContext().getSharedPreferences("MetaPrefs", Context.MODE_PRIVATE)
-        fechaInicio = sharedPreferences.getLong("fecha_inicio_meta", 0L)
-        fechaFin = sharedPreferences.getLong("fecha_fin_meta", 0L)
         habitos = obtenerHabitosGuardados(sharedPreferences)
 
         if (habitos.isEmpty()) {
             Toast.makeText(context, "No hay hábitos guardados", Toast.LENGTH_SHORT).show()
+        } else {
+            configurarHabitosSpinner(sharedPreferences)
         }
 
-        configurarCalendario()
-        configurarHabitosSpinner()
+        configurarCalendario(sharedPreferences)
 
         return view
     }
@@ -82,14 +82,17 @@ class ProgresoMetaFragment : Fragment() {
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
-    private fun configurarCalendario() {
+    private fun configurarCalendario(sharedPreferences: SharedPreferences) {
+        val fechaInicio = sharedPreferences.getLong("fecha_inicio_meta", 0L)
+        val fechaFin = sharedPreferences.getLong("fecha_fin_meta", 0L)
+
         if (fechaInicio > 0 && fechaFin > fechaInicio) {
             calendarioMeta.minDate = fechaInicio
             calendarioMeta.maxDate = fechaFin
         } else {
             Toast.makeText(context, "Error al cargar las fechas de la meta. Por favor, reinicia la meta.", Toast.LENGTH_SHORT).show()
             calendarioMeta.minDate = System.currentTimeMillis()
-            calendarioMeta.maxDate = System.currentTimeMillis() + 31536000000L
+            calendarioMeta.maxDate = System.currentTimeMillis() + 31536000000L // 1 año como máximo
         }
 
         calendarioMeta.setOnDateChangeListener { _, year, month, dayOfMonth ->
@@ -112,7 +115,7 @@ class ProgresoMetaFragment : Fragment() {
                 selectedDate.get(Calendar.DAY_OF_MONTH) == today.get(Calendar.DAY_OF_MONTH)
     }
 
-    private fun configurarHabitosSpinner() {
+    private fun configurarHabitosSpinner(sharedPreferences: SharedPreferences) {
         if (habitos.isNotEmpty()) {
             val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, habitos)
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -121,6 +124,17 @@ class ProgresoMetaFragment : Fragment() {
             habitoSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                     val habitoSeleccionado = habitos[position]
+                    val fechaInicio = sharedPreferences.getLong("fecha_inicio_meta_$habitoSeleccionado", 0L)
+                    val fechaFin = sharedPreferences.getLong("fecha_fin_meta_$habitoSeleccionado", 0L)
+
+                    if (fechaInicio > 0 && fechaFin > 0) {
+                        val fechaInicioStr = dateFormat.format(Date(fechaInicio))
+                        val fechaFinStr = dateFormat.format(Date(fechaFin))
+                        fechasTextView.text = "Fechas: $fechaInicioStr - $fechaFinStr"
+                    } else {
+                        fechasTextView.text = "Fechas no disponibles"
+                    }
+
                     Toast.makeText(requireContext(), "Hábito seleccionado: $habitoSeleccionado", Toast.LENGTH_SHORT).show()
                 }
 
